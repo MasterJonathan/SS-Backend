@@ -39,7 +39,7 @@ class _AppBarActionsState extends State<AppBarActions> {
               value: 'profile',
               child: Row(
                 children: [
-                  Icon(Icons.person_outline, color: AppColors.onSurface),
+                  Icon(Icons.person_outline, color: AppColors.surface),
                   const SizedBox(width: 8),
                   Text('Profile'),
                 ],
@@ -59,7 +59,7 @@ class _AppBarActionsState extends State<AppBarActions> {
           ],
           child: CircleAvatar(
             backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.onPrimary,
+            foregroundColor: AppColors.surface,
             child: Text(authService.userEmail?.substring(0,1).toUpperCase() ?? "A"), // First letter of email
           ),
         ),
@@ -77,7 +77,7 @@ class _NotificationBell extends StatefulWidget {
 class __NotificationBellState extends State<_NotificationBell> {
   final GlobalKey _key = GlobalKey();
   OverlayEntry? _overlayEntry;
-  List<String> _notifications = [
+  final List<String> _notifications = [
     "New user registered: John Doe",
     "Order #12345 shipped",
     "Server maintenance scheduled for 2 AM",
@@ -177,7 +177,7 @@ class __NotificationBellState extends State<_NotificationBell> {
       children: [
         IconButton(
           key: _key,
-          icon: Icon(Icons.notifications_none_outlined, color: AppColors.onSurface),
+          icon: Icon(Icons.notifications_none_outlined, color: AppColors.foreground),
           tooltip: "Notifications",
           onPressed: _toggleDropdown,
         ),

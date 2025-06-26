@@ -32,9 +32,13 @@ dependencies:
     sdk: flutter
   provider: ^6.0.5 # Or latest
   fl_chart: ^0.68.0 # Or latest
-  intl: ^0.19.0 # Or latest
+  intl: ^0.20.2
   table_calendar: ^3.1.1 # Or latest
   cupertino_icons: ^1.0.6
+  google_fonts: ^6.2.1
+
+  cloud_firestore: ^5.6.9
+  firebase_core: ^3.14.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

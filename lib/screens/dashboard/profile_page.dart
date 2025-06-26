@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(_nameController.text, style: textTheme.headlineSmall), // Display name
-                        Text(authService.userEmail ?? '', style: textTheme.titleMedium?.copyWith(color: AppColors.darkGrey)),
+                        Text(authService.userEmail ?? '', style: textTheme.titleMedium?.copyWith(color: AppColors.primary)),
                       ],
                     ),
                     const Spacer(),

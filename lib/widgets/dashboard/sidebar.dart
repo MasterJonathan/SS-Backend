@@ -1,157 +1,261 @@
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
+import 'package:admin_dashboard_template/models/sidebar_menu_item.dart';
+import 'package:admin_dashboard_template/widgets/dashboard/sidebar_clickable_item.dart'; // Import the split widget
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Sidebar extends StatelessWidget {
+class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
+
+  @override
+  State<Sidebar> createState() => _SidebarState();
+}
+
+class _SidebarState extends State<Sidebar> {
+  late final List<SidebarMenuItem> _menuItems;
+  String? _currentlyExpandedParentKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _menuItems = _buildMenuItems();
+  }
+
+  List<SidebarMenuItem> _buildMenuItems() {
+    // This structure should match your desired sidebar layout
+    return [
+      SidebarMenuItem(
+        title: 'Overview',
+        icon: Icons.dashboard_outlined,
+        page: DashboardPage.overview,
+      ),
+      SidebarMenuItem(
+        title: 'User Management',
+        icon: Icons.people_alt_outlined,
+        page: DashboardPage.users,
+      ),
+      SidebarMenuItem(
+        title: 'Kawan SS Management',
+        icon: Icons.folder_shared_outlined,
+        page: DashboardPage.kawanSSManagement,
+      ),
+      SidebarMenuItem(
+        title: 'Berita Web',
+        icon: Icons.article_outlined,
+        page: DashboardPage.beritaWeb,
+      ),
+      SidebarMenuItem(
+        title: 'Kontributor',
+        icon: Icons.folder_open_outlined,
+        isExpanded: false,
+        subItems: [
+          SidebarMenuItem(
+            title: 'Kontributor Management',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.contributor,
+          ),
+          SidebarMenuItem(
+            title: 'Kontributor Post',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kontributorPost,
+          ),
+          SidebarMenuItem(
+            title: 'Kontributor Comment',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kontributorComment,
+          ),
+          SidebarMenuItem(
+            title: 'Postingan Terlapor',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.postinganTerlapor,
+          ),
+        ],
+      ),
+      SidebarMenuItem(
+        title: 'Chat Management',
+        icon: Icons.chat_bubble_outline,
+        page: DashboardPage.chatManagement,
+      ),
+      SidebarMenuItem(
+        title: 'Report Management',
+        icon: Icons.flag_outlined,
+        page: DashboardPage.reportManagement,
+      ),
+      SidebarMenuItem(
+        title: 'Products (Old)',
+        icon: Icons.inventory_2_outlined,
+        page: DashboardPage.products,
+      ),
+      SidebarMenuItem(
+        title: 'Calendar (Old)',
+        icon: Icons.calendar_today_outlined,
+        page: DashboardPage.calendar,
+      ),
+      SidebarMenuItem(
+        title: 'Charts (Old)',
+        icon: Icons.bar_chart_outlined,
+        page: DashboardPage.charts,
+      ),
+      SidebarMenuItem(
+        title: 'Forms (Old)',
+        icon: Icons.edit_note_outlined,
+        page: DashboardPage.forms,
+      ),
+
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     final navigationService = Provider.of<NavigationService>(context);
-    final currentPath = navigationService.currentPage;
+    final currentPage = navigationService.currentPage;
+
+    bool isAnySubItemSelected(SidebarMenuItem parentItem) {
+      if (parentItem.subItems == null) return false;
+      return parentItem.subItems!.any((subItem) => subItem.page == currentPage);
+    }
 
     return Container(
-      width: 250,
-      color: AppColors.sidebarBackground,
-      child: ListView(
+      width: 260,
+      color: AppColors.surface, // Sidebar Background: Light
+      child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(16),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.dashboard_customize, color: AppColors.primary, size: 30),
-                const SizedBox(width: 10),
                 Text(
                   'Admin Panel',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: AppColors.foreground,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
           ),
-          const Divider(color: Colors.white24, height: 1),
-          _SidebarItem(
-            icon: Icons.dashboard_outlined,
-            title: 'Overview',
-            page: DashboardPage.overview,
-            isSelected: currentPath == DashboardPage.overview,
-            onTap: () => navigationService.navigateTo(DashboardPage.overview),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _menuItems.length,
+              itemBuilder: (context, index) {
+                final item = _menuItems[index];
+                bool isParentOfSelectedChild = isAnySubItemSelected(item);
+                bool isDirectlySelected = item.page == currentPage;
+                bool isParentEffectivelyActive =
+                    item.isExpanded || isParentOfSelectedChild;
+
+                if (item.subItems != null && item.subItems!.isNotEmpty) {
+                  return Container(
+                    // This Container was in your original code
+                    decoration: BoxDecoration(
+                      color:
+                          isParentEffectivelyActive
+                              ? AppColors.primary
+                              : AppColors.surface,
+                    ),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        dividerColor: const Color.fromRGBO(0, 0, 0, 0),
+                      ),
+                      child: ExpansionTile(
+                        tilePadding: EdgeInsets.symmetric(
+                          vertical: 0.0,
+                          horizontal: 16.0,
+                        ),
+
+                        key: PageStorageKey<String>(item.title),
+                        iconColor: AppColors.surface,
+                        collapsedIconColor:
+                            isParentOfSelectedChild
+                                ? AppColors.surface
+                                : AppColors.foreground,
+                        initiallyExpanded:
+                            item.isExpanded || isParentOfSelectedChild,
+                        onExpansionChanged: (bool expanding) {
+                          setState(() {
+                            if (expanding) {
+                              for (var menuItem in _menuItems) {
+                                if (menuItem.title != item.title &&
+                                    menuItem.subItems != null) {
+                                  menuItem.isExpanded = false;
+                                }
+                              }
+                              item.isExpanded = true;
+                              _currentlyExpandedParentKey = item.title;
+                            } else {
+                              item.isExpanded = false;
+                              if (_currentlyExpandedParentKey == item.title) {
+                                _currentlyExpandedParentKey = null;
+                              }
+                            }
+                          });
+                        },
+                        leading: Icon(
+                          item.icon,
+                          color:
+                              isParentEffectivelyActive
+                                  ? AppColors.surface
+                                  : AppColors.foreground,
+                          size: 20,
+                        ),
+                        title: Text(
+                          item.title,
+                          style: TextStyle(
+                            color:
+                                isParentEffectivelyActive
+                                    ? AppColors.surface
+                                    : AppColors.foreground,
+                            fontWeight:
+                                isParentEffectivelyActive
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        children:
+                            item.subItems!
+                                .map(
+                                  (subItem) => SidebarClickableItem(
+                                    // Using the imported public class
+                                    icon: subItem.icon,
+                                    title: subItem.title,
+                                    isSelected: subItem.page == currentPage,
+                                    onTap: () {
+                                      if (subItem.page != null) {
+                                        navigationService.navigateTo(
+                                          subItem.page!,
+                                        );
+                                      }
+                                    },
+                                    level: 1,
+                                    sidebarBackgroundColor: AppColors.surface,
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                    ),
+                  );
+                } else {
+                  return SidebarClickableItem(
+                    // Using the imported public class
+                    icon: item.icon,
+                    title: item.title,
+                    isSelected: isDirectlySelected,
+                    onTap: () {
+                      if (item.page != null) {
+                        navigationService.navigateTo(item.page!);
+                      }
+                    },
+                    level: 0,
+                    sidebarBackgroundColor: AppColors.surface,
+                  );
+                }
+              },
+            ),
           ),
-          _SidebarItem(
-            icon: Icons.people_alt_outlined,
-            title: 'Users',
-            page: DashboardPage.users,
-            isSelected: currentPath == DashboardPage.users,
-            onTap: () => navigationService.navigateTo(DashboardPage.users),
-          ),
-          _SidebarItem(
-            icon: Icons.inventory_2_outlined,
-            title: 'Products',
-            page: DashboardPage.products,
-            isSelected: currentPath == DashboardPage.products,
-            onTap: () => navigationService.navigateTo(DashboardPage.products),
-          ),
-          _SidebarItem(
-            icon: Icons.calendar_today_outlined,
-            title: 'Calendar',
-            page: DashboardPage.calendar,
-            isSelected: currentPath == DashboardPage.calendar,
-            onTap: () => navigationService.navigateTo(DashboardPage.calendar),
-          ),
-          _SidebarItem(
-            icon: Icons.bar_chart_outlined,
-            title: 'Charts',
-            page: DashboardPage.charts,
-            isSelected: currentPath == DashboardPage.charts,
-            onTap: () => navigationService.navigateTo(DashboardPage.charts),
-          ),
-          _SidebarItem(
-            icon: Icons.edit_note_outlined,
-            title: 'Forms',
-            page: DashboardPage.forms,
-            isSelected: currentPath == DashboardPage.forms,
-            onTap: () => navigationService.navigateTo(DashboardPage.forms),
-          ),
-          const Spacer(), // Pushes settings and profile to the bottom
-           Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-             child: const Divider(color: Colors.white24, height: 1),
-           ),
-          _SidebarItem(
-            icon: Icons.person_outline,
-            title: 'Profile',
-            page: DashboardPage.profile,
-            isSelected: currentPath == DashboardPage.profile,
-            onTap: () => navigationService.navigateTo(DashboardPage.profile),
-          ),
-          // Add Settings if needed
         ],
-      ),
-    );
-  }
-}
-
-class _SidebarItem extends StatefulWidget {
-  final IconData icon;
-  final String title;
-  final DashboardPage page;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _SidebarItem({
-    required this.icon,
-    required this.title,
-    required this.page,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  State<_SidebarItem> createState() => _SidebarItemState();
-}
-
-class _SidebarItemState extends State<_SidebarItem> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = widget.isSelected
-        ? AppColors.sidebarSelectedText
-        : AppColors.sidebarText;
-    final bgColor = widget.isSelected
-        ? AppColors.sidebarSelected
-        : _isHovered
-            ? AppColors.sidebarHover
-            : AppColors.sidebarBackground;
-
-    return Material(
-      color: bgColor,
-      child: InkWell(
-        onTap: widget.onTap,
-        onHover: (hovering) {
-          setState(() {
-            _isHovered = hovering;
-          });
-        },
-        splashColor: AppColors.primary.withOpacity(0.3),
-        hoverColor: AppColors.sidebarHover,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          child: Row(
-            children: [
-              Icon(widget.icon, color: color),
-              const SizedBox(width: 15),
-              Text(
-                widget.title,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: widget.isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 15
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
