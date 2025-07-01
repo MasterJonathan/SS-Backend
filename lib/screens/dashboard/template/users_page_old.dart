@@ -1,5 +1,5 @@
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/user_model.dart';
+import 'package:admin_dashboard_template/models/user_admin_model.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,29 +13,29 @@ class UsersPage extends StatefulWidget {
 
 class _UsersPageState extends State<UsersPage> {
   // Mock data - in a real app, this would come from a service/API
-  final List<UserModel> _users = [
-    UserModel(
+  final List<UserAdminModel> _users = [
+    UserAdminModel(
       id: '1',
       name: 'Alice Smith',
       email: 'alice@example.com',
       role: 'Admin',
       joinedDate: DateTime(2023, 1, 15),
     ),
-    UserModel(
+    UserAdminModel(
       id: '2',
       name: 'Bob Johnson',
       email: 'bob@example.com',
       role: 'Editor',
       joinedDate: DateTime(2023, 2, 20),
     ),
-    UserModel(
+    UserAdminModel(
       id: '3',
       name: 'Charlie Brown',
       email: 'charlie@example.com',
       role: 'Viewer',
       joinedDate: DateTime(2023, 3, 10),
     ),
-    UserModel(
+    UserAdminModel(
       id: '4',
       name: 'Diana Prince',
       email: 'diana@example.com',
@@ -43,7 +43,7 @@ class _UsersPageState extends State<UsersPage> {
       joinedDate: DateTime(2023, 4, 5),
     ),
   ];
-  List<UserModel> _filteredUsers = [];
+  List<UserAdminModel> _filteredUsers = [];
   String _searchTerm = "";
   final DateFormat _dateFormatter = DateFormat('MMM dd, yyyy');
 
@@ -71,7 +71,7 @@ class _UsersPageState extends State<UsersPage> {
     });
   }
 
-  void _showEditUserDialog({UserModel? user}) {
+  void _showEditUserDialog({UserAdminModel? user}) {
     final isEditing = user != null;
     final nameController = TextEditingController(text: user?.name ?? '');
     final emailController = TextEditingController(text: user?.email ?? '');
@@ -155,7 +155,7 @@ class _UsersPageState extends State<UsersPage> {
                       }
                     } else {
                       _users.add(
-                        UserModel(
+                        UserAdminModel(
                           id:
                               DateTime.now().millisecondsSinceEpoch
                                   .toString(), // Simple unique ID
@@ -178,7 +178,7 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  void _deleteUser(UserModel user) {
+  void _deleteUser(UserAdminModel user) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

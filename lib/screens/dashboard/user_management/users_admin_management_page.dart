@@ -47,14 +47,14 @@ class CombinedUserModel {
   }
 }
 
-class UsersPage extends StatefulWidget {
-  const UsersPage({super.key});
+class UsersAdminPage extends StatefulWidget {
+  const UsersAdminPage({super.key});
 
   @override
-  State<UsersPage> createState() => _UsersPageState();
+  State<UsersAdminPage> createState() => _UsersAdminPageState();
 }
 
-class _UsersPageState extends State<UsersPage> {
+class _UsersAdminPageState extends State<UsersAdminPage> {
   final List<CombinedUserModel> _users = List.generate(
     20,
     (index) => CombinedUserModel(

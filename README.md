@@ -22,4 +22,4 @@ samples, guidance on mobile development, and a full API reference.
 Saat menambahkan page ada 3 file yang perlu diubah
 - sidebar.dart
 - dashboard_layout.dart
-- naviagtion_service.dart
+- navigation_service.dart
