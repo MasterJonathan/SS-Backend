@@ -33,17 +33,97 @@ class _SidebarState extends State<Sidebar> {
       SidebarMenuItem(
         title: 'User Management',
         icon: Icons.people_alt_outlined,
-        page: DashboardPage.users,
+        isExpanded: false,
+        subItems: [
+          SidebarMenuItem(
+            title: 'Change Password',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.users,
+          ),
+          SidebarMenuItem(
+            title: 'Settings',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.settings,
+          ),
+          SidebarMenuItem(
+            title: 'User Admin Management',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.userAdminManagement,
+          ),
+        ],
+        
       ),
       SidebarMenuItem(
         title: 'Kawan SS Management',
         icon: Icons.folder_shared_outlined,
-        page: DashboardPage.kawanSSManagement,
+        isExpanded: false,
+        subItems: [
+          SidebarMenuItem(
+            title: 'Tema Siaran',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kawanSSManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Banner Top',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.bannerTop,
+          ),
+          SidebarMenuItem(
+            title: 'Pop Up',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kawanSSManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Banner',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kawanSSManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Kategori Kawan SS',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kawanSSManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Kawan SS',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.kawanSS,
+          ),
+        ],
+        
       ),
       SidebarMenuItem(
         title: 'Berita Web',
         icon: Icons.article_outlined,
-        page: DashboardPage.beritaWeb,
+        isExpanded: false,
+        subItems: [
+          SidebarMenuItem(
+            title: 'Berita Web',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.beritaWeb,
+          ),
+          SidebarMenuItem(
+            title: 'Potret Netter',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.beritaWeb,
+          ),
+          SidebarMenuItem(
+            title: 'Video',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.beritaWeb,
+          ),
+          SidebarMenuItem(
+            title: 'Potret Kelana Kota',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.beritaWeb,
+          ),
+          SidebarMenuItem(
+            title: 'Podcast',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.beritaWeb,
+          ),
+
+        ],
+        
       ),
       SidebarMenuItem(
         title: 'Kontributor',
@@ -53,7 +133,7 @@ class _SidebarState extends State<Sidebar> {
           SidebarMenuItem(
             title: 'Kontributor Management',
             icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.contributor,
+            page: DashboardPage.kontributorManagement,
           ),
           SidebarMenuItem(
             title: 'Kontributor Post',
@@ -80,7 +160,45 @@ class _SidebarState extends State<Sidebar> {
       SidebarMenuItem(
         title: 'Report Management',
         icon: Icons.flag_outlined,
-        page: DashboardPage.reportManagement,
+                isExpanded: false,
+        subItems: [
+          SidebarMenuItem(
+            title: 'Video Call',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Audio Call',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Registrasi Kontributor',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Posting Kontributor',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Posting Kawan SS',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+          SidebarMenuItem(
+            title: 'Like Posting',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+          SidebarMenuItem(
+            title: 'View Posting',
+            icon: Icons.radio_button_unchecked_outlined,
+            page: DashboardPage.reportManagement,
+          ),
+        ],
+        
       ),
       SidebarMenuItem(
         title: 'Products (Old)',

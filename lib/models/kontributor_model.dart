@@ -10,10 +10,15 @@ class KontributorModel {
   final int jumlahComment;
   final int jumlahLaporan;
   final int jumlahLike;
-  final String? kontributorPhotoURL; // Field name is 'kontributorPhotoURL'
-  final String? lokasi;
+  final String? kontributorPhotoURL;
+  final String? lokasi; // Untuk Alamat
   final DateTime uploadDate;
-  // Add userId if it exists for kontributor posts
+  final String? userId; // User ID yang membuat
+
+  // Field baru yang ditambahkan agar sesuai dengan tampilan tabel
+  final String? email;
+  final String? telepon;
+
 
   KontributorModel({
     required this.id,
@@ -28,6 +33,10 @@ class KontributorModel {
     this.kontributorPhotoURL,
     this.lokasi,
     required this.uploadDate,
+    this.userId,
+    // Tambahkan field baru di constructor
+    this.email,
+    this.telepon,
   });
 
   factory KontributorModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
@@ -45,6 +54,10 @@ class KontributorModel {
       kontributorPhotoURL: data?['kontributorPhotoURL'],
       lokasi: data?['lokasi'],
       uploadDate: (data?['uploadDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      userId: data?['userId'],
+      // Ambil data untuk field baru dari Firestore
+      email: data?['email'],
+      telepon: data?['telepon'],
     );
   }
 
@@ -61,6 +74,10 @@ class KontributorModel {
       if (kontributorPhotoURL != null) 'kontributorPhotoURL': kontributorPhotoURL,
       if (lokasi != null) 'lokasi': lokasi,
       'uploadDate': Timestamp.fromDate(uploadDate),
+      if (userId != null) 'userId': userId,
+      // Tambahkan field baru saat menyimpan ke Firestore
+      if (email != null) 'email': email,
+      if (telepon != null) 'telepon': telepon,
     };
   }
 }
