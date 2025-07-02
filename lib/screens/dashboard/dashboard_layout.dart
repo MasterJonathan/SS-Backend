@@ -8,6 +8,7 @@ import 'package:admin_dashboard_template/screens/dashboard/users_page.dart';
 import 'package:admin_dashboard_template/widgets/dashboard/app_bar_actions.dart';
 import 'package:admin_dashboard_template/widgets/dashboard/sidebar.dart';
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
+import 'package:admin_dashboard_template/screens/dashboard/socialnetworkanalysis.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,8 @@ class DashboardLayout extends StatelessWidget {
         return const FormsDemoPage();
       case DashboardPage.profile:
         return const ProfilePage();
+      case DashboardPage.socialnetworkanalysis:
+        return const Socialnetworkanalysis();
       default:
         return const OverviewPage();
     }

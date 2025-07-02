@@ -72,6 +72,12 @@ class Sidebar extends StatelessWidget {
             isSelected: currentPath == DashboardPage.forms,
             onTap: () => navigationService.navigateTo(DashboardPage.forms),
           ),
+          _SidebarItem(
+            icon: Icons.offline_bolt, 
+            title: 'Graph SNA', 
+            page: DashboardPage.socialnetworkanalysis, 
+            isSelected: currentPath == DashboardPage.socialnetworkanalysis, 
+            onTap: () => navigationService.navigateTo(DashboardPage.socialnetworkanalysis)),
           const Spacer(), // Pushes settings and profile to the bottom
            Padding(
              padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -84,7 +90,6 @@ class Sidebar extends StatelessWidget {
             isSelected: currentPath == DashboardPage.profile,
             onTap: () => navigationService.navigateTo(DashboardPage.profile),
           ),
-          // Add Settings if needed
         ],
       ),
     );
