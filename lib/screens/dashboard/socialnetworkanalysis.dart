@@ -107,12 +107,12 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
           colors: [
             AppColors.primary,
             AppColors.primary.withOpacity(0.8),
-            AppColors.secondary,
+            AppColors.foreground,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withOpacity(0.3),
@@ -156,7 +156,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.dashboard_rounded,
@@ -245,7 +245,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: stat['color'].withOpacity(0.3),
@@ -257,7 +257,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
           onTap: () {
             // Add tap action
           },
@@ -274,7 +274,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         stat['icon'],
@@ -286,7 +286,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         stat['change'],
@@ -333,7 +333,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -363,7 +363,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                           Text(
                             'Monthly performance overview',
                             style: textTheme.bodyMedium?.copyWith(
-                              color: AppColors.darkGrey,
+                              color: AppColors.primary,
                             ),
                           ),
                         ],
@@ -372,7 +372,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -409,7 +409,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -444,7 +444,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -503,7 +503,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -546,7 +546,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),
           ),
@@ -566,7 +566,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                 Text(
                   description,
                   style: TextStyle(
-                    color: AppColors.darkGrey,
+                    color: AppColors.foreground,
                     fontSize: 12,
                   ),
                 ),
@@ -576,7 +576,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
           Text(
             time,
             style: TextStyle(
-              color: AppColors.darkGrey,
+              color: AppColors.foreground,
               fontSize: 11,
             ),
           ),
@@ -627,7 +627,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
           show: true,
           drawVerticalLine: false,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.lightGrey.withOpacity(0.3),
+            color: AppColors.primary.withOpacity(0.3),
             strokeWidth: 1,
           ),
         ),
@@ -648,7 +648,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                     child: Text(
                       months[value.toInt()],
                       style: TextStyle(
-                        color: AppColors.darkGrey,
+                        color: AppColors.foreground,
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
@@ -668,7 +668,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
                 return Text(
                   '\$${(value.toInt() / 1000).toStringAsFixed(0)}k',
                   style: TextStyle(
-                    color: AppColors.darkGrey,
+                    color: AppColors.foreground,
                     fontWeight: FontWeight.w500,
                     fontSize: 12,
                   ),
@@ -695,7 +695,7 @@ class _BeautifulDashboardState extends State<Socialnetworkanalysis>
             ],
             isCurved: true,
             gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.secondary],
+              colors: [AppColors.primary, AppColors.foreground],
             ),
             barWidth: 4,
             isStrokeCapRound: true,

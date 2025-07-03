@@ -51,7 +51,6 @@ class _SidebarState extends State<Sidebar> {
             page: DashboardPage.userAdminManagement,
           ),
         ],
-        
       ),
       SidebarMenuItem(
         title: 'Kawan SS Management',
@@ -89,7 +88,6 @@ class _SidebarState extends State<Sidebar> {
             page: DashboardPage.kawanSS,
           ),
         ],
-        
       ),
       SidebarMenuItem(
         title: 'Berita Web',
@@ -121,9 +119,7 @@ class _SidebarState extends State<Sidebar> {
             icon: Icons.radio_button_unchecked_outlined,
             page: DashboardPage.beritaWeb,
           ),
-
         ],
-        
       ),
       SidebarMenuItem(
         title: 'Kontributor',
@@ -160,7 +156,7 @@ class _SidebarState extends State<Sidebar> {
       SidebarMenuItem(
         title: 'Report Management',
         icon: Icons.flag_outlined,
-                isExpanded: false,
+        isExpanded: false,
         subItems: [
           SidebarMenuItem(
             title: 'Video Call',
@@ -198,14 +194,12 @@ class _SidebarState extends State<Sidebar> {
             page: DashboardPage.reportManagement,
           ),
         ],
-        
       ),
-                SidebarItem(
-            icon: Icons.offline_bolt, 
-            title: 'Graph SNA', 
-            page: DashboardPage.socialnetworkanalysis, 
-            isSelected: currentPath == DashboardPage.socialnetworkanalysis, 
-            onTap: () => navigationService.navigateTo(DashboardPage.socialnetworkanalysis)),
+      SidebarMenuItem(
+        title: 'Graph SNA',
+        icon: Icons.offline_bolt,
+        page: DashboardPage.socialnetworkanalysis,
+      ),
       SidebarMenuItem(
         title: 'Products (Old)',
         icon: Icons.inventory_2_outlined,
@@ -226,7 +220,6 @@ class _SidebarState extends State<Sidebar> {
         icon: Icons.edit_note_outlined,
         page: DashboardPage.forms,
       ),
-
     ];
   }
 
