@@ -72,7 +72,7 @@ class _CalendarAdminPageState extends State<CalendarAdminPage> {
                 shape: BoxShape.circle,
               ),
               markerDecoration: const BoxDecoration(
-                color: AppColors.secondary,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -110,12 +110,12 @@ class _CalendarAdminPageState extends State<CalendarAdminPage> {
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 4.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.lightGrey),
+                          border: Border.all(color: AppColors.primary.withAlpha(10)),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: ListTile(
                           title: Text(event.title),
-                          leading: const Icon(Icons.event, color: AppColors.secondary),
+                          leading: Icon(Icons.event, color: AppColors.primary.withAlpha(10)),
                         ),
                       );
                     },

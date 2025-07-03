@@ -58,7 +58,7 @@ class ChartsPage extends StatelessWidget {
         centerSpaceRadius: 40,
         sections: [
           PieChartSectionData(color: AppColors.primary, value: 40, title: 'Organic', radius: 50, titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
-          PieChartSectionData(color: AppColors.secondary, value: 30, title: 'Referral', radius: 50, titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black)),
+          PieChartSectionData(color: Colors.blue, value: 30, title: 'Referral', radius: 50, titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black)),
           PieChartSectionData(color: Colors.orange, value: 15, title: 'Direct', radius: 50, titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
           PieChartSectionData(color: Colors.red, value: 15, title: 'Social', radius: 50, titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
         ],
@@ -75,7 +75,7 @@ class ChartsPage extends StatelessWidget {
         titlesData: FlTitlesData(
           show: true,
           bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (value, meta) {
-            const style = TextStyle(color: AppColors.darkGrey, fontWeight: FontWeight.bold, fontSize: 11);
+            const style = TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 11);
             String text;
             switch (value.toInt()) {
               case 0: text = 'Jan'; break;
@@ -94,14 +94,14 @@ class ChartsPage extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (value) => FlLine(color: AppColors.lightGrey.withOpacity(0.5), strokeWidth: 0.5),
+          getDrawingHorizontalLine: (value) => FlLine(color: AppColors.primary.withAlpha(120), strokeWidth: 0.5),
         ),
-        borderData: FlBorderData(show: true, border: Border.all(color: AppColors.lightGrey.withOpacity(0.5))),
+        borderData: FlBorderData(show: true, border: Border.all(color: AppColors.primary.withAlpha(120))),
         barGroups: [
           BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 8, color: AppColors.primary, width: 15)]),
-          BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 10, color: AppColors.secondary, width: 15)]),
+          BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 10, color: AppColors.primary, width: 15)]),
           BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 14, color: AppColors.primary, width: 15)]),
-          BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 15, color: AppColors.secondary, width: 15)]),
+          BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 15, color: AppColors.primary, width: 15)]),
           BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 13, color: AppColors.primary, width: 15)]),
         ],
       ),
