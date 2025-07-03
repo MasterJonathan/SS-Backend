@@ -200,6 +200,12 @@ class _SidebarState extends State<Sidebar> {
         ],
         
       ),
+                SidebarItem(
+            icon: Icons.offline_bolt, 
+            title: 'Graph SNA', 
+            page: DashboardPage.socialnetworkanalysis, 
+            isSelected: currentPath == DashboardPage.socialnetworkanalysis, 
+            onTap: () => navigationService.navigateTo(DashboardPage.socialnetworkanalysis)),
       SidebarMenuItem(
         title: 'Products (Old)',
         icon: Icons.inventory_2_outlined,
@@ -263,7 +269,6 @@ class _SidebarState extends State<Sidebar> {
                 bool isDirectlySelected = item.page == currentPage;
                 bool isParentEffectivelyActive =
                     item.isExpanded || isParentOfSelectedChild;
-
                 if (item.subItems != null && item.subItems!.isNotEmpty) {
                   return Container(
                     // This Container was in your original code

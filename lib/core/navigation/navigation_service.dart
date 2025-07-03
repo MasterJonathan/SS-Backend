@@ -24,6 +24,8 @@ enum DashboardPage {
   kontributorPost,
 
   chatManagement,
+  
+  socialnetworkanalysis,
 
 
 
