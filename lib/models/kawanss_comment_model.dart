@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class KawanssCommentModel {
-  final String id; // Document ID
+  final String id; 
   final String comment;
   final bool deleted;
   final List<String>? dislikedUsers;
   final int jumlahDislike;
   final int jumlahLike;
   final int jumlahReplies;
-  final String kawanssId; // Field name is 'kawanssId'
+  final String kawanssId; 
   final List<String>? likedUsers;
   final String? photoURL;
   final DateTime uploadDate;

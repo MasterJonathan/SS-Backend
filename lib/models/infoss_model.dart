@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InfossModel {
-  final String id; // Document ID
+  final String id; 
   final String? detail;
   final String? gambar;
   final String judul;
@@ -13,9 +13,9 @@ class InfossModel {
   final double? latitude;
   final String? location;
   final double? longitude;
-  final String title; // Seems duplicative of judul, confirm usage
+  final String title; 
   final DateTime uploadDate;
-  // Add other fields if present (e.g., userId who posted)
+  
 
   InfossModel({
     required this.id,

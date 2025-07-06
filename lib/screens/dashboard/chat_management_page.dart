@@ -51,13 +51,13 @@ class _ChatManagementPageState extends State<ChatManagementPage> {
               .toList();
         }
 
-        // --- STRUKTUR BUILD MENGIKUTI POLA USERS_PAGE.DART ---
+        
         return CustomCard(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Header tidak ada, langsung ke kontrol tabel
+              
               Align(
                 alignment: Alignment.centerRight,
                 child: _buildSearchField(),
@@ -68,7 +68,7 @@ class _ChatManagementPageState extends State<ChatManagementPage> {
               else if (provider.errorMessage != null)
                 Expanded(child: Center(child: Text('Error: ${provider.errorMessage}', style: TextStyle(color: AppColors.error))))
               else
-                // Expanded memaksa SingleChildScrollView+DataTable untuk mengisi sisa ruang
+                
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,

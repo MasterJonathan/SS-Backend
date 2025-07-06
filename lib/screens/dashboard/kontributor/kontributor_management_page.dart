@@ -14,7 +14,7 @@ class KontributorManagementPage extends StatefulWidget {
 }
 
 class _KontributorManagementPageState extends State<KontributorManagementPage> {
-  // Gunakan _filteredData dari state
+  
   late List<KontributorModel> _filteredData;
   final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd\nHH:mm:ss');
@@ -22,11 +22,11 @@ class _KontributorManagementPageState extends State<KontributorManagementPage> {
   @override
   void initState() {
     super.initState();
-    // Inisialisasi awal _filteredData
+    
     final provider = Provider.of<KontributorProvider>(context, listen: false);
     _filteredData = provider.kontributors;
 
-    // Listener hanya untuk memicu rebuild saat teks berubah
+    
     _searchController.addListener(() {
       setState(() {});
     });
@@ -38,7 +38,7 @@ class _KontributorManagementPageState extends State<KontributorManagementPage> {
     super.dispose();
   }
   
-  // Metode filter yang aman untuk dipanggil dari build
+  
   void _performFilter(String query, List<KontributorModel> allData) {
     if (query.isEmpty) {
       _filteredData = allData;
@@ -55,9 +55,9 @@ class _KontributorManagementPageState extends State<KontributorManagementPage> {
   Widget build(BuildContext context) {
     return Consumer<KontributorProvider>(
       builder: (context, provider, child) {
-        // --- LOGIKA FILTER YANG BENAR ---
+        
         _performFilter(_searchController.text, provider.kontributors);
-        // ------------------------------------
+        
         
         return Column(
           key: const PageStorageKey('kontributorManagementPage'),

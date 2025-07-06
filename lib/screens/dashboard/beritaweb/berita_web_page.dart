@@ -22,7 +22,7 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() {}); // Hanya untuk memicu rebuild
+      setState(() {}); 
     });
   }
 
@@ -36,7 +36,7 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
   Widget build(BuildContext context) {
     return Consumer<NewsProvider>(
       builder: (context, provider, child) {
-        // --- LOGIKA FILTER YANG BENAR ---
+        
         List<NewsModel> filteredData;
         final query = _searchController.text.toLowerCase();
         final allData = provider.newsList;
@@ -49,7 +49,7 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
             item.lead.toLowerCase().contains(query)
           ).toList();
         }
-        // ------------------------------------
+        
 
         return Column(
           key: const PageStorageKey('beritaWebPage'),
@@ -74,7 +74,7 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
                         width: double.infinity,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          // Kirim filteredData sebagai argumen
+                          
                           child: _buildDataTable(provider, filteredData),
                         ),
                       ),
@@ -90,7 +90,7 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
 
   
   Widget _buildTableControls() {
-    // ... (kode table controls tidak berubah)
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -124,7 +124,7 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
     );
   }
 
-  // Terima filteredData sebagai argumen
+  
   Widget _buildDataTable(NewsProvider provider, List<NewsModel> filteredData) {
     return DataTable(
       columns: const [
@@ -139,9 +139,9 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
         DataColumn(label: Text('Tanggal\nPosting')),
         DataColumn(label: Text('Diposting\nOleh')),
       ],
-      // Gunakan filteredData yang diterima dari argumen
+      
       rows: filteredData.map((item) {
-        // ... (kode DataRow tidak berubah)
+        
         return DataRow(cells: [
           DataCell(
             Row(

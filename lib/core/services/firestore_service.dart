@@ -1,4 +1,4 @@
-// lib/core/services/firestore_service.dart
+
 
 import 'package:admin_dashboard_template/core/utils/constants.dart';
 import 'package:admin_dashboard_template/models/banner_model.dart';
@@ -13,7 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // --- Metode untuk Koleksi Users ---
+  
 
   Stream<List<UserModel>> getUsersStream() {
     return _db
@@ -37,11 +37,11 @@ class FirestoreService {
     return _db.collection(USERS_COLLECTION).doc(user.id).set(user.toFirestore());
   }
 
-  Future<void> updateUser(UserModel user) { // Ini untuk update penuh dari dialog edit
+  Future<void> updateUser(UserModel user) { 
     return _db.collection(USERS_COLLECTION).doc(user.id).update(user.toFirestore());
   }
 
-  // ✨ METODE BARU UNTUK UPDATE SEBAGIAN FIELD
+  
   Future<void> updateUserPartial(String userId, Map<String, dynamic> data) {
     return _db.collection(USERS_COLLECTION).doc(userId).update(data);
   }
@@ -49,7 +49,7 @@ class FirestoreService {
     return _db.collection(USERS_COLLECTION).doc(userId).delete();
   }
 
-  // --- Metode untuk Koleksi KawanSS ---
+  
 
   Stream<List<KawanssModel>> getKawanssStream() {
     return _db
@@ -73,7 +73,7 @@ class FirestoreService {
     return _db.collection(KAWANSS_COLLECTION).doc(kawanssId).delete();
   }
 
-  // --- Metode untuk Koleksi Kontributor ---
+  
 
   Stream<List<KontributorModel>> getKontributorsStream() {
     return _db
@@ -97,7 +97,7 @@ class FirestoreService {
     return _db.collection(KONTRIBUTOR_COLLECTION).doc(kontributorId).delete();
   }
 
-  // --- Metode untuk Koleksi News --- (BARU)
+  
 
   Stream<List<NewsModel>> getNewsStream() {
     return _db
@@ -121,12 +121,12 @@ class FirestoreService {
     return _db.collection(NEWS_COLLECTION).doc(newsId).delete();
   }
 
-  // --- Metode untuk Koleksi Banner --- (BARU)
-  // Menggunakan nama koleksi generik, sesuaikan dengan nama koleksi banner Anda
-  // Misalnya, 'bannerTop' atau 'banners'
+  
+  
+  
   Stream<List<BannerTopModel>> getBannersStream() {
     return _db
-        .collection('bannerTop') // Ganti dengan nama koleksi banner Anda
+        .collection('bannerTop') 
         .orderBy('tanggalPosting', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -150,7 +150,7 @@ class FirestoreService {
     return _db
         .collection(INFOSS_COMMENTS_COLLECTION)
         .orderBy('uploadDate', descending: true)
-        .limit(100) // Batasi jumlah komentar yang diambil untuk performa
+        .limit(100) 
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => InfossCommentModel.fromFirestore(doc, null))
@@ -167,23 +167,23 @@ class FirestoreService {
 
 
   Future<SettingsModel?> getSettings() async {
-    // Ambil referensi dokumen secara langsung
+    
     final docRef = _db.collection('settings').doc('appConfig');
     final docSnap = await docRef.get();
 
     if (docSnap.exists) {
-      // Jika dokumen ada, konversi ke SettingsModel
+      
       return SettingsModel.fromFirestore(docSnap, null);
     } else {
-      // Jika dokumen belum ada, bisa return null atau objek SettingsModel default
-      // Return null lebih baik agar UI tahu data belum ada
+      
+      
       return null; 
     }
   }
 
   Future<void> updateSettings(SettingsModel settings) {
-    // Gunakan .set() untuk membuat dokumen jika belum ada, atau menimpa jika sudah ada.
-    // Ini memastikan dokumen pengaturan selalu ada setelah update pertama.
+    
+    
     return _db.collection('settings').doc('appConfig').set(settings.toFirestore());
   }
 

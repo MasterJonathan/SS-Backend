@@ -9,7 +9,7 @@ import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-// Nama class diubah menjadi OverviewPage
+
 class OverviewPage extends StatefulWidget {
   const OverviewPage({super.key});
 
@@ -27,7 +27,7 @@ class _OverviewPageState extends State<OverviewPage>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1000), // Sedikit dipercepat
+      duration: const Duration(milliseconds: 1000), 
       vsync: this,
     );
     
@@ -59,7 +59,7 @@ class _OverviewPageState extends State<OverviewPage>
             opacity: _fadeAnimation.value,
             child: ListView(
               key: const PageStorageKey('overviewPage'),
-              padding: const EdgeInsets.all(16), // Padding disesuaikan
+              padding: const EdgeInsets.all(16), 
               children: [
                 _buildHeader(context),
                 const SizedBox(height: 24),
@@ -67,8 +67,8 @@ class _OverviewPageState extends State<OverviewPage>
                 const SizedBox(height: 24),
                 _buildChartsSection(context),
                 const SizedBox(height: 24),
-                // Activity and Performance Section bisa di-enable jika diperlukan
-                // _buildActivityAndPerformanceSection(context),
+                
+                
               ],
             ),
           ),
@@ -80,7 +80,7 @@ class _OverviewPageState extends State<OverviewPage>
   Widget _buildHeader(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final authProvider = context.watch<AuthenticationProvider>();
-    // Berikan nilai default jika user belum termuat atau nama kosong
+    
     final userName = authProvider.user?.nama ?? 'Admin';
 
     return Container(
@@ -103,7 +103,7 @@ class _OverviewPageState extends State<OverviewPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome back! 👋', // Ganti dengan 'Welcome back, $userName! 👋' jika sudah ada auth
+                  'Welcome back! 👋', 
                   style: textTheme.titleMedium?.copyWith(color: AppColors.surface.withOpacity(0.8)),
                 ),
                 const SizedBox(height: 4),
@@ -133,12 +133,12 @@ class _OverviewPageState extends State<OverviewPage>
   }
 
   Widget _buildStatsSection(BuildContext context) {
-    // Hubungkan dengan provider untuk mendapatkan data dinamis
+    
     final totalUsers = context.watch<UserProvider>().users.length;
     final totalKawanss = context.watch<KawanssProvider>().kawanssList.length;
     final totalKontributor = context.watch<KontributorProvider>().kontributors.length;
     
-    // Formatter untuk angka
+    
     final numberFormat = NumberFormat.decimalPattern('id_ID');
 
     final stats = [
@@ -146,29 +146,29 @@ class _OverviewPageState extends State<OverviewPage>
         'icon': Icons.people_alt_rounded,
         'title': 'Total Users',
         'value': numberFormat.format(totalUsers),
-        'change': '', // Kosongkan jika tidak ada data perubahan
-        'color': const Color(0xFF6366F1), // Ungu
+        'change': '', 
+        'color': const Color(0xFF6366F1), 
       },
       {
         'icon': Icons.rss_feed,
         'title': 'Total Kawan SS',
         'value': numberFormat.format(totalKawanss),
         'change': '',
-        'color': const Color(0xFF10B981), // Hijau
+        'color': const Color(0xFF10B981), 
       },
       {
         'icon': Icons.edit_note_rounded,
         'title': 'Total Kontributor',
         'value': numberFormat.format(totalKontributor),
         'change': '',
-        'color': const Color(0xFFF59E0B), // Kuning
+        'color': const Color(0xFFF59E0B), 
       },
       {
         'icon': Icons.article_rounded,
         'title': 'Total Berita',
-        'value': '1,234', // Contoh data statis
+        'value': '1,234', 
         'change': '',
-        'color': const Color(0xFFEF4444), // Merah
+        'color': const Color(0xFFEF4444), 
       },
     ];
 
@@ -181,14 +181,14 @@ class _OverviewPageState extends State<OverviewPage>
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            // --- TINGGI CARD DIPERBAIKI DI SINI ---
-            childAspectRatio: crossAxisCount > 1 ? 2.8 : 3.2, // Rasio lebih lebar (pipih)
+            
+            childAspectRatio: crossAxisCount > 1 ? 2.8 : 3.2, 
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
           itemCount: stats.length,
           itemBuilder: (context, index) {
-            // Animasi untuk setiap card
+            
             return TweenAnimationBuilder<double>(
               duration: Duration(milliseconds: 400 + (index * 100)),
               tween: Tween(begin: 0.0, end: 1.0),
@@ -267,7 +267,7 @@ class _OverviewPageState extends State<OverviewPage>
     );
   }
 
-  // Bagian chart, activity, dan performance tidak diubah dan menggunakan data statis
+  
   Widget _buildChartsSection(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Row(

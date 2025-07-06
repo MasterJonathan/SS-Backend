@@ -1,7 +1,7 @@
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/sidebar_menu_item.dart';
-import 'package:admin_dashboard_template/widgets/dashboard/sidebar_clickable_item.dart'; // Import the split widget
+import 'package:admin_dashboard_template/widgets/dashboard/sidebar_clickable_item.dart'; 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,7 @@ class _SidebarState extends State<Sidebar> {
   }
 
   List<SidebarMenuItem> _buildMenuItems() {
-    // This structure should match your desired sidebar layout
+    
     return [
       SidebarMenuItem(
         title: 'Overview',
@@ -235,7 +235,7 @@ class _SidebarState extends State<Sidebar> {
 
     return Container(
       width: 260,
-      color: AppColors.surface, // Sidebar Background: Light
+      color: AppColors.surface, 
       child: Column(
         children: [
           Padding(
@@ -264,7 +264,7 @@ class _SidebarState extends State<Sidebar> {
                     item.isExpanded || isParentOfSelectedChild;
                 if (item.subItems != null && item.subItems!.isNotEmpty) {
                   return Container(
-                    // This Container was in your original code
+                    
                     decoration: BoxDecoration(
                       color:
                           isParentEffectivelyActive
@@ -334,7 +334,7 @@ class _SidebarState extends State<Sidebar> {
                             item.subItems!
                                 .map(
                                   (subItem) => SidebarClickableItem(
-                                    // Using the imported public class
+                                    
                                     icon: subItem.icon,
                                     title: subItem.title,
                                     isSelected: subItem.page == currentPage,
@@ -355,7 +355,7 @@ class _SidebarState extends State<Sidebar> {
                   );
                 } else {
                   return SidebarClickableItem(
-                    // Using the imported public class
+                    
                     icon: item.icon,
                     title: item.title,
                     isSelected: isDirectlySelected,

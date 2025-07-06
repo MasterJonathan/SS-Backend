@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InfossCommentModel {
-  final String id; // Document ID
+  final String id; 
   final String comment;
   final bool deleted;
-  final List<String>? dislikedUsers; // Assuming array of user IDs
+  final List<String>? dislikedUsers; 
   final String infossId;
   final int jumlahDislike;
   final int jumlahLike;
   final int jumlahReplies;
-  final List<String>? likedUsers; // Assuming array of user IDs
+  final List<String>? likedUsers; 
   final String? photoURL;
   final DateTime uploadDate;
   final String userId;
   final String username;
-  // Consider a 'replies' field if it's an array of nested comment objects,
-  // or handle as a subcollection separately.
+  
+  
 
   InfossCommentModel({
     required this.id,

@@ -1,8 +1,8 @@
-// lib/screens/dashboard/profile_page.dart
+
 
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/user_model.dart';
-import 'package:admin_dashboard_template/providers/authentication_provider.dart'; // DIUBAH: Impor nama provider yang benar
+import 'package:admin_dashboard_template/providers/authentication_provider.dart'; 
 import 'package:admin_dashboard_template/providers/user_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // DIUBAH: Gunakan AuthenticationProvider
+    
     final authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
     if (authProvider.user != null) {
       _nameController.text = authProvider.user!.nama;
@@ -57,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final userProvider = context.read<UserProvider>();
-      // DIUBAH: Gunakan AuthenticationProvider
+      
       final authProvider = context.read<AuthenticationProvider>();
 
       if (authProvider.user != null) {
@@ -71,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
           jumlahKontributor: authProvider.user!.jumlahKontributor,
           jumlahLike: authProvider.user!.jumlahLike,
           jumlahShare: authProvider.user!.jumlahShare,
-          // Salin field lain dari model asli jika ada
+          
           aktivitas: authProvider.user!.aktivitas,
           namaAktivitas: authProvider.user!.namaAktivitas,
           waktu: authProvider.user!.waktu,
@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    // DIUBAH: Gunakan Consumer<AuthenticationProvider>
+    
     return Consumer<AuthenticationProvider>(
       builder: (context, authProvider, child) {
         final user = authProvider.user;

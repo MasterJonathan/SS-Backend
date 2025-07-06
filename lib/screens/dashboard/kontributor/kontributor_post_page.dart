@@ -35,7 +35,7 @@ class _KontributorPostPageState extends State<KontributorPostPage> {
   Widget build(BuildContext context) {
     return Consumer<KontributorProvider>(
       builder: (context, provider, child) {
-        // --- LOGIKA FILTER YANG BENAR ---
+        
         List<KontributorModel> filteredData;
         final query = _searchController.text.toLowerCase();
         final allData = provider.kontributors;
@@ -48,7 +48,7 @@ class _KontributorPostPageState extends State<KontributorPostPage> {
             (item.accountName?.toLowerCase() ?? '').contains(query)
           ).toList();
         }
-        // ------------------------------------
+        
 
         return Column(
           key: const PageStorageKey('kontributorPostPage'),
@@ -76,7 +76,7 @@ class _KontributorPostPageState extends State<KontributorPostPage> {
                         width: double.infinity,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: _buildDataTable(provider, filteredData), // Kirim filteredData
+                          child: _buildDataTable(provider, filteredData), 
                         ),
                       ),
                   ],
@@ -91,7 +91,7 @@ class _KontributorPostPageState extends State<KontributorPostPage> {
 
 
   Widget _buildSearchField() {
-    // ... (kode search field tidak berubah)
+    
     return SizedBox(
       width: 250,
       child: TextField(
@@ -101,7 +101,7 @@ class _KontributorPostPageState extends State<KontributorPostPage> {
     );
   }
 
-  // Terima filteredData sebagai argumen
+  
   Widget _buildDataTable(KontributorProvider provider, List<KontributorModel> filteredData) {
     return DataTable(
       columns: const [
@@ -117,9 +117,9 @@ class _KontributorPostPageState extends State<KontributorPostPage> {
         DataColumn(label: Text('Tanggal\nPosting')),
         DataColumn(label: Text('Diposting\nOleh')),
       ],
-      // Gunakan filteredData dari argumen
+      
       rows: filteredData.map((item) {
-        // ... (kode DataRow tidak berubah)
+        
         bool isActive = !item.deleted;
         String jenisStatus = item.deleted ? 'Dihapus Kontributor' : 'Aktif';
 

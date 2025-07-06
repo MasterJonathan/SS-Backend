@@ -9,9 +9,9 @@ class ChartsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return ListView( // Using ListView to allow multiple charts
+    return ListView( 
       key: const PageStorageKey('chartsPage'),
-      padding: const EdgeInsets.all(0), // CustomCard will handle padding
+      padding: const EdgeInsets.all(0), 
       children: [
         Text('Data Visualizations', style: textTheme.headlineMedium),
         const SizedBox(height: 20),
@@ -46,7 +46,7 @@ class ChartsPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        // You can add more charts here
+        
       ],
     );
   }

@@ -42,25 +42,25 @@ class _ActivityFeedPanelState extends State<ActivityFeedPanel>
     super.dispose();
   }
 
-  /// 1. Metode helper untuk membangun TabBar dengan gaya baru
+  
   TabBar _buildTabBar() {
     return TabBar(
       controller: _tabController,
-      // Properti untuk gaya teks
+      
       labelColor: AppColors.surface,
       unselectedLabelColor: AppColors.primary,
       labelStyle: const TextStyle(fontWeight: FontWeight.bold),
       unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
 
-      // 2. Menghilangkan garis batas bawah
+      
       dividerColor: Colors.transparent,
       
-      // 3. Mengatur agar indikator memenuhi seluruh tab
+      
       indicatorSize: TabBarIndicatorSize.tab,
       indicator: BoxDecoration(
-        // Warna latar belakang untuk tab yang aktif
+        
         color: Theme.of(context).primaryColor,
-        // Membuat sudutnya membulat
+        
         borderRadius: BorderRadius.circular(4.0),
       ),
       tabs: const [
@@ -88,7 +88,7 @@ class _ActivityFeedPanelState extends State<ActivityFeedPanel>
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _buildTabBar(), // Memanggil metode helper
+          child: _buildTabBar(), 
         ),
         Expanded(
           child: TabBarView(
@@ -114,7 +114,7 @@ class _ActivityFeedPanelState extends State<ActivityFeedPanel>
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _buildTabBar(), // Memanggil metode helper
+          child: _buildTabBar(), 
         ),
         IndexedStack(
           index: _tabController.index,

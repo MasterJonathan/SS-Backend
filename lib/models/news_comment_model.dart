@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewsCommentModel {
-  final String id; // Document ID
+  final String id; 
   final String comment;
   final bool deleted;
   final List<String>? dislikedUsers;
   final int jumlahDislike;
   final int jumlahLike;
   final int jumlahReplies;
-  final String newsId; // Field name is 'newsId'
+  final String newsId; 
   final List<String>? likedUsers;
   final String? photoURL;
   final DateTime uploadDate;
   final String userId;
   final String username;
-  // Consider a 'replies' field if it's an array of nested comment objects
+  
 
   NewsCommentModel({
     required this.id,

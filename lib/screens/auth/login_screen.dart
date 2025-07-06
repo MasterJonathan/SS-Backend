@@ -1,4 +1,4 @@
-// lib/screens/auth/login_screen.dart
+
 
 import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   String? _errorMessage;
 
-  // Fungsi untuk memicu proses login
+  
   Future<void> _login(BuildContext context, AuthenticationProvider authProvider) async {
     if (_formKey.currentState!.validate()) {
       setState(() { _errorMessage = null; });
@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan Consumer untuk mendapatkan status dari AuthProvider
+    
     return Consumer<AuthenticationProvider>(
       builder: (context, authProvider, child) {
         return Scaffold(
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          // Nonaktifkan tombol saat sedang proses otentikasi
+                          
                           onPressed: authProvider.status == AuthStatus.Authenticating
                               ? null
                               : () => _login(context, authProvider),

@@ -1,4 +1,4 @@
-// lib/providers/news_provider.dart
+
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
@@ -25,7 +25,7 @@ class NewsProvider extends ChangeNotifier {
   }
 
   void _listenToNews() {
-    // Anda perlu menambahkan 'getNewsStream' di FirestoreService
+    
     _streamSubscription = _firestoreService.getNewsStream().listen((data) {
       _newsList = data;
       _setState(NewsViewState.Idle);
@@ -38,7 +38,7 @@ class NewsProvider extends ChangeNotifier {
   Future<bool> addNews(NewsModel news) async {
     _setState(NewsViewState.Busy);
     try {
-      // Anda perlu menambahkan 'addNews' di FirestoreService
+      
       await _firestoreService.addNews(news);
       _setState(NewsViewState.Idle);
       return true;
@@ -52,7 +52,7 @@ class NewsProvider extends ChangeNotifier {
   Future<bool> updateNews(NewsModel news) async {
     _setState(NewsViewState.Busy);
     try {
-      // Anda perlu menambahkan 'updateNews' di FirestoreService
+      
       await _firestoreService.updateNews(news);
       _setState(NewsViewState.Idle);
       return true;
@@ -66,7 +66,7 @@ class NewsProvider extends ChangeNotifier {
   Future<bool> deleteNews(String newsId) async {
     _setState(NewsViewState.Busy);
     try {
-      // Anda perlu menambahkan 'deleteNews' di FirestoreService
+      
       await _firestoreService.deleteNews(newsId);
       _setState(NewsViewState.Idle);
       return true;

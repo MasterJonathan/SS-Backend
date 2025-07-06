@@ -1,4 +1,4 @@
-// lib/providers/authentication_provider.dart
+
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/auth/auth_service.dart';
@@ -97,12 +97,12 @@ class AuthenticationProvider extends ChangeNotifier {
         );
         await _firestoreService.addUser(newUser);
         
-        // --- PERUBAHAN PENTING ADA DI SINI ---
-        // Setelah berhasil mendaftar dan membuat profil, langsung logout.
-        // Ini akan memicu _onAuthStateChanged untuk mengubah status menjadi Unauthenticated,
-        // yang akan mengarahkan pengguna kembali ke halaman login.
+        
+        
+        
+        
         await _authService.signOut(); 
-        // ------------------------------------
+        
         
         return true;
       }

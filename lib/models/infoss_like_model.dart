@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InfossLikeModel {
-  final String id; // Document ID
+  final String id; 
   final String infossId;
   final DateTime timestamp;
   final String userId;

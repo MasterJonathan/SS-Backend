@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewsModel {
-  final String id; // Document ID (e.g., "471146")
+  final String id; 
   final int jumlahComment;
   final int jumlahLike;
   final int jumlahShare;
   final int jumlahView;
-  // Add other news fields like title, content, imageUrl, publishDate, category etc.
-  // The screenshot only shows counts.
+  
+  
 
   NewsModel({
     required this.id,
@@ -15,7 +15,7 @@ class NewsModel {
     required this.jumlahLike,
     required this.jumlahShare,
     required this.jumlahView,
-    // required String title, etc.
+    
   });
 
   factory NewsModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
@@ -26,7 +26,7 @@ class NewsModel {
       jumlahLike: data?['jumlahLike'] ?? 0,
       jumlahShare: data?['jumlahShare'] ?? 0,
       jumlahView: data?['jumlahView'] ?? 0,
-      // title: data?['title'] ?? '',
+      
     );
   }
 
@@ -36,7 +36,7 @@ class NewsModel {
       'jumlahLike': jumlahLike,
       'jumlahShare': jumlahShare,
       'jumlahView': jumlahView,
-      // 'title': title,
+      
     };
   }
 }

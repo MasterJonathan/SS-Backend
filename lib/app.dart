@@ -1,4 +1,4 @@
-// lib/app.dart
+
 
 import 'package:admin_dashboard_template/core/auth/auth_service.dart';
 import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
@@ -27,11 +27,11 @@ class AdminDashboardApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // 1. Daftarkan Service (Class biasa, tanpa state UI)
+        
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<FirestoreService>(create: (_) => FirestoreService()),
 
-        // 2. Daftarkan Provider (ChangeNotifier untuk state management)
+        
         
         ChangeNotifierProvider<NavigationService>(
           create: (_) => NavigationService(),
@@ -80,20 +80,20 @@ class AdminDashboardApp extends StatelessWidget {
           ),
         ),
       ],
-      // Gunakan 'builder' untuk merekonstruksi MaterialApp berdasarkan state
+      
       builder: (context, child) {
-        // Gunakan 'select' agar hanya rebuild saat 'status' berubah, lebih efisien
+        
         final authStatus = context.select((AuthenticationProvider p) => p.status);
         
         return MaterialApp(
           title: 'Admin Dashboard',
           theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
-          // Gunakan 'home' untuk menentukan halaman awal secara dinamis.
-          // Ini lebih aman daripada 'initialRoute' saat startup.
+          
+          
           home: _buildHome(authStatus),
           
-          // 'routes' tetap berguna untuk navigasi bernama seperti Navigator.pushNamed()
+          
           routes: {
             AppRoutes.login: (context) => const LoginScreen(),
             AppRoutes.register: (context) => const RegisterScreen(),
@@ -106,7 +106,7 @@ class AdminDashboardApp extends StatelessWidget {
     );
   }
 
-  // Helper widget untuk memilih halaman awal berdasarkan status otentikasi
+  
   Widget _buildHome(AuthStatus status) {
     switch (status) {
       case AuthStatus.Authenticated:
@@ -116,7 +116,7 @@ class AdminDashboardApp extends StatelessWidget {
       case AuthStatus.Uninitialized:
       case AuthStatus.Authenticating:
       default:
-        // Tampilkan layar loading saat status belum pasti atau sedang proses
+        
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(),

@@ -1,4 +1,4 @@
-// lib/screens/dashboard/settings_page.dart
+
 
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/settings_model.dart';
@@ -17,21 +17,21 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final _formKey = GlobalKey<FormState>();
   
-  // Controllers untuk text fields
+  
   final TextEditingController _audioUrlController = TextEditingController();
   final TextEditingController _visualUrlController = TextEditingController();
   final TextEditingController _termsController = TextEditingController();
   
-  // State untuk checkbox
+  
   bool _isChatActive = true;
 
-  // Variabel untuk menyimpan data awal agar bisa dibandingkan
+  
   SettingsModel? _initialSettings;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Ambil data dari provider saat widget pertama kali terhubung
+    
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     if (settingsProvider.settings != null && _initialSettings == null) {
       _initialSettings = settingsProvider.settings;
@@ -84,7 +84,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, provider, child) {
-        // Jika state berubah (misal setelah save dan fetch ulang), update controllers
+        
         if (provider.settings != null && _initialSettings != provider.settings) {
           _initialSettings = provider.settings;
           _loadSettingsToControllers(_initialSettings!);

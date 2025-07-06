@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class KontributorCommentModel {
-  final String id; // Document ID
+  final String id; 
   final String comment;
   final bool deleted;
-  final String kontributorId; // Field name is 'kontributorId'
+  final String kontributorId; 
   final String? photoURL;
   final DateTime uploadDate;
-  final String username; // Assuming userId is implied by username or a separate field
-  // Add userId if it's a separate field
+  final String username; 
+  
 
   KontributorCommentModel({
     required this.id,

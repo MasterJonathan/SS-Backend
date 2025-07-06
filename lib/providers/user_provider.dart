@@ -1,4 +1,4 @@
-// lib/providers/user_provider.dart
+
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
@@ -12,7 +12,7 @@ class UserProvider extends ChangeNotifier {
   late StreamSubscription _streamSubscription;
 
   List<UserModel> _users = [];
-  UserViewState _state = UserViewState.Busy; // Mulai dengan status Busy
+  UserViewState _state = UserViewState.Busy; 
   String? _errorMessage;
 
   List<UserModel> get users => _users;
@@ -74,8 +74,8 @@ class UserProvider extends ChangeNotifier {
   }
 
    Future<bool> updateUserPartial(String userId, Map<String, dynamic> data) async {
-    // Kita bisa set state ke Busy jika ingin ada loading,
-    // tapi untuk toggle biasanya tidak perlu.
+    
+    
     try {
       await _firestoreService.updateUserPartial(userId, data);
       return true;
