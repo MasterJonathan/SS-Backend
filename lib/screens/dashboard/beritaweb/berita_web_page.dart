@@ -1,8 +1,10 @@
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/news_model.dart'; // Import model
+import 'package:admin_dashboard_template/models/news_model.dart';
+import 'package:admin_dashboard_template/providers/news_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class BeritaWebPage extends StatefulWidget {
   const BeritaWebPage({super.key});
@@ -12,108 +14,83 @@ class BeritaWebPage extends StatefulWidget {
 }
 
 class _BeritaWebPageState extends State<BeritaWebPage> {
-  // Mock data based on the image
-  final List<NewsModel> _newsData = [
-    NewsModel(id: '1', judul: 'Divpropam Polri Gelar Sidang Etik Mantan Kapolres Ngada Hari Ini', lead: '“Memang jadwal sidangnya pagi ini, makanya kami datang untuk mengawasi secara langsung bagaimana proses sidang itu diselenggarakan,” ucapnya.', tanggalPublish: DateTime(2025, 3, 17, 11, 30, 18), category: 'Kelana Kota', dilihat: 0, like: 0, status: true, tanggalPosting: DateTime(2025, 3, 17, 11, 31, 02), dipostingOleh: 'Grab System'),
-    NewsModel(id: '2', judul: 'Harga Pangan Awal Pekan: Cabai Rawit Merah Rp87.500/kg, Telur Ayam Ras Rp35.450/kg', lead: 'Pusat Informasi Harga Pangan Strategis (PIHPS) Nasional yang dikelola Bank Indonesia mencatat, harga cabai rawit merah pada Senin (17/3/2025) pagi, di tingkat pedagang eceran mencapai Rp87.500 per kilogram...', tanggalPublish: DateTime(2025, 3, 17, 11, 19, 35), category: 'Ekonomi Bisnis', dilihat: 0, like: 0, status: true, tanggalPosting: DateTime(2025, 3, 17, 11, 20, 04), dipostingOleh: 'Grab System'),
-    NewsModel(id: '3', judul: 'AS Yakin ByteDance Bakal Sepakat Soal Penjualan TikTok Sebelum 5 April', lead: 'JD Vance Wakil Presiden AS menyatakan bahwa penjualan ini perlu dilakukan agar TikTok tetap dapat beroperasi di AS.', tanggalPublish: DateTime(2025, 3, 17, 11, 2, 26), category: 'Kelana Kota', dilihat: 0, like: 0, status: true, tanggalPosting: DateTime(2025, 3, 17, 11, 3, 2), dipostingOleh: 'Grab System'),
-    NewsModel(id: '4', judul: 'Rupiah Menguat Seiring Dolar AS Masih Dibayangi Sentimen', lead: '“Dolar AS kemungkinan masih dibayangi sentimen negatif karena pasar berekspektasi bahwa kebijakan kenaikan tarif Trump bisa mendorong bank sentral lain untuk melakukan intervensi,” kata Analis Pasar Mata Uang, Ibrahim Assuaibi, Senin (17/3/2025).', tanggalPublish: DateTime(2025, 3, 17, 10, 51, 5), category: 'Ekonomi Bisnis', dilihat: 1, like: 0, status: true, tanggalPosting: DateTime(2025, 3, 17, 11, 0, 4), dipostingOleh: 'Grab System'),
-  ];
-
-  late List<NewsModel> _filteredData;
-  String _searchTerm = "";
+  final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd\nHH:mm:ss');
   String _entriesToShow = '10';
 
   @override
   void initState() {
     super.initState();
-    _filteredData = _newsData;
-  }
-
-  void _filterData(String query) {
-    setState(() {
-      _searchTerm = query;
-      if (query.isEmpty) {
-        _filteredData = _newsData;
-      } else {
-        _filteredData = _newsData
-            .where((item) =>
-                item.judul.toLowerCase().contains(query.toLowerCase()) ||
-                item.lead.toLowerCase().contains(query.toLowerCase()) ||
-                item.category.toLowerCase().contains(query.toLowerCase()) ||
-                item.dipostingOleh.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+    _searchController.addListener(() {
+      setState(() {}); // Hanya untuk memicu rebuild
     });
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      key: const PageStorageKey('beritaWebPage'),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 24),
-          CustomCard(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTableControls(),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: _buildDataTable(),
-                  ),
+    return Consumer<NewsProvider>(
+      builder: (context, provider, child) {
+        // --- LOGIKA FILTER YANG BENAR ---
+        List<NewsModel> filteredData;
+        final query = _searchController.text.toLowerCase();
+        final allData = provider.newsList;
+
+        if (query.isEmpty) {
+          filteredData = allData;
+        } else {
+          filteredData = allData.where((item) =>
+            item.judul.toLowerCase().contains(query) ||
+            item.lead.toLowerCase().contains(query)
+          ).toList();
+        }
+        // ------------------------------------
+
+        return Column(
+          key: const PageStorageKey('beritaWebPage'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              CustomCard(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTableControls(),
+                    const SizedBox(height: 20),
+                    if (provider.state == NewsViewState.Busy && provider.newsList.isEmpty)
+                      const Center(child: CircularProgressIndicator())
+                    else if (provider.errorMessage != null)
+                      Center(child: Text('Error: ${provider.errorMessage}'))
+                    else
+                      SizedBox(
+                        width: double.infinity,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          // Kirim filteredData sebagai argumen
+                          child: _buildDataTable(provider, filteredData),
+                        ),
+                      ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ]);
+      },
     );
   }
 
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Berita Web Management',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Halaman untuk Berita Web di CMS',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.foreground.withOpacity(0.6)),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            const Icon(Icons.home, color: AppColors.primary, size: 16),
-            const SizedBox(width: 4),
-            Text('Home', style: TextStyle(color: AppColors.primary)),
-            const SizedBox(width: 4),
-            Icon(Icons.chevron_right, color: AppColors.foreground.withOpacity(0.5), size: 18),
-            const SizedBox(width: 4),
-            Text('Berita Web Management', style: TextStyle(color: AppColors.foreground)),
-          ],
-        )
-      ],
-    );
-  }
   
   Widget _buildTableControls() {
+    // ... (kode table controls tidak berubah)
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -123,24 +100,12 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.foreground.withOpacity(0.2)),
-                borderRadius: BorderRadius.circular(4),
-              ),
+              decoration: BoxDecoration(border: Border.all(color: AppColors.foreground.withOpacity(0.2)), borderRadius: BorderRadius.circular(4)),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: _entriesToShow,
-                  items: <String>['10', '25', '50', '100'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _entriesToShow = newValue!;
-                    });
-                  },
+                  items: <String>['10', '25', '50', '100'].map((String value) => DropdownMenuItem<String>(value: value, child: Text(value))).toList(),
+                  onChanged: (String? newValue) => setState(() => _entriesToShow = newValue!),
                 ),
               ),
             ),
@@ -151,18 +116,16 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
         SizedBox(
           width: 250,
           child: TextField(
-            decoration: const InputDecoration(
-              labelText: 'Search:',
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            ),
-            onChanged: _filterData,
+            controller: _searchController,
+            decoration: const InputDecoration(labelText: 'Search:', contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDataTable() {
+  // Terima filteredData sebagai argumen
+  Widget _buildDataTable(NewsProvider provider, List<NewsModel> filteredData) {
     return DataTable(
       columns: const [
         DataColumn(label: Text('Aksi')),
@@ -176,7 +139,9 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
         DataColumn(label: Text('Tanggal\nPosting')),
         DataColumn(label: Text('Diposting\nOleh')),
       ],
-      rows: _filteredData.map((item) {
+      // Gunakan filteredData yang diterima dari argumen
+      rows: filteredData.map((item) {
+        // ... (kode DataRow tidak berubah)
         return DataRow(cells: [
           DataCell(
             Row(
@@ -187,28 +152,13 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
               ],
             ),
           ),
-          DataCell(
-            SizedBox(
-              width: 200, // Beri lebar agar teks judul tidak wrap terlalu banyak
-              child: Text(item.judul),
-            ),
-          ),
-          DataCell(
-            SizedBox(
-              width: 300, // Beri lebar untuk paragraf lead
-              child: Text(item.lead, maxLines: 3, overflow: TextOverflow.ellipsis),
-            ),
-          ),
+          DataCell(SizedBox(width: 200, child: Text(item.judul))),
+          DataCell(SizedBox(width: 300, child: Text(item.lead, maxLines: 3, overflow: TextOverflow.ellipsis))),
           DataCell(Text(_dateFormatter.format(item.tanggalPublish))),
           DataCell(Text(item.category)),
           DataCell(Text(item.dilihat.toString())),
           DataCell(Text(item.like.toString())),
-          DataCell(
-            Icon(
-              item.status ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: item.status ? AppColors.success : AppColors.foreground.withOpacity(0.5),
-            ),
-          ),
+          DataCell(Icon(item.status ? Icons.check_circle : Icons.radio_button_unchecked, color: item.status ? AppColors.success : AppColors.foreground.withOpacity(0.5))),
           DataCell(Text(_dateFormatter.format(item.tanggalPosting))),
           DataCell(Text(item.dipostingOleh)),
         ]);
@@ -222,16 +172,8 @@ class _BeritaWebPageState extends State<BeritaWebPage> {
       height: 32,
       child: ElevatedButton(
         onPressed: onPressed ?? () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: AppColors.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          padding: EdgeInsets.zero,
-        ),
-        child: Tooltip(
-          message: tooltip,
-          child: Icon(icon, size: 16),
-        ),
+        style: ElevatedButton.styleFrom(backgroundColor: color, foregroundColor: AppColors.surface, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)), padding: EdgeInsets.zero),
+        child: Tooltip(message: tooltip, child: Icon(icon, size: 16)),
       ),
     );
   }

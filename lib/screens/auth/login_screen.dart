@@ -1,6 +1,8 @@
-import 'package:admin_dashboard_template/core/auth/auth_service.dart';
+// lib/screens/auth/login_screen.dart
+
 import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
+import 'package:admin_dashboard_template/providers/authentication_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,33 +16,24 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'admin@example.com');
-  final _passwordController = TextEditingController(text: 'password');
-  bool _isLoading = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   String? _errorMessage;
 
-  Future<void> _login() async {
+  // Fungsi untuk memicu proses login
+  Future<void> _login(BuildContext context, AuthenticationProvider authProvider) async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-      final authService = Provider.of<AuthService>(context, listen: false);
-      final success = await authService.login(
+      setState(() { _errorMessage = null; });
+      
+      final success = await authProvider.signIn(
         _emailController.text,
         _passwordController.text,
       );
-      if (mounted) {
+
+      if (!success && mounted) {
         setState(() {
-          _isLoading = false;
+          _errorMessage = 'Login gagal. Periksa kembali email dan password Anda.';
         });
-        if (success) {
-          Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
-        } else {
-          setState(() {
-            _errorMessage = 'Invalid email or password.';
-          });
-        }
       }
     }
   }
@@ -54,15 +47,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
+    // Gunakan Consumer untuk mendapatkan status dari AuthProvider
+    return Consumer<AuthenticationProvider>(
+      builder: (context, authProvider, child) {
+        return Scaffold(
+          backgroundColor: AppColors.surface,
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
               child: CustomCard(
                 padding: const EdgeInsets.all(24.0),
                 child: Form(
@@ -70,84 +62,70 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.lock_outline,
-                        size: 60,
-                        color: AppColors.primary,
-                      ),
+                      Icon(Icons.lock_outline, size: 60, color: AppColors.primary),
                       const SizedBox(height: 16),
-                      Text(
-                        'Admin Login',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+                      Text('Admin Login', style: Theme.of(context).textTheme.headlineMedium),
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email_outlined),
-                        ),
+                        decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                          if (value == null || value.isEmpty || !value.contains('@')) {
+                            return 'Masukkan email yang valid';
                           }
-                          if (!value.contains('@')) return 'Enter a valid email';
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(Icons.lock_outline_rounded),
-                        ),
+                        decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.lock_outline_rounded)),
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
+                            return 'Masukkan password Anda';
                           }
                           return null;
                         },
                       ),
-                      const SizedBox(height: 8),
                       if (_errorMessage != null)
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            _errorMessage!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontSize: 14,
-                            ),
-                          ),
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Text(_errorMessage!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 14)),
                         ),
                       const SizedBox(height: 24),
-                      _isLoading
-                          ? const CircularProgressIndicator()
-                          : SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _login,
-                              child: const Text('Login'),
-                            ),
-                          ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          // Nonaktifkan tombol saat sedang proses otentikasi
+                          onPressed: authProvider.status == AuthStatus.Authenticating
+                              ? null
+                              : () => _login(context, authProvider),
+                          child: authProvider.status == AuthStatus.Authenticating
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                              : const Text('Login'),
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pushNamed(AppRoutes.register);
                         },
-                        child: const Text('Don\'t have an account? Register'),
+                        child: const Text('Belum punya akun? Register'),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
