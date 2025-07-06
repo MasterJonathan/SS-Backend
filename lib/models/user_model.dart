@@ -1,40 +1,44 @@
+// lib/models/user_model.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  final String id; // Document ID (UID from Firebase Auth usually)
-  final int? aktivitas; // Assuming this is a count or flag
-  final String? namaAktivitas;
-  final DateTime? waktu; // Timestamp for 'namaAktivitas'
-  final String? alamat;
+  final String id;
   final String email;
-  // 'id' field in Firestore doc seems to be a duplicate of document ID, handled by model's id.
+  final String nama;
+  final String role;
+  final bool isActive; // ✨ FIELD BARU UNTUK STATUS AKTIF/INAKTIF
+  final DateTime? waktu; // Akan kita gunakan sebagai Tanggal Registrasi
+  final String? photoURL;
+  // Field lain tetap ada
+  final int? aktivitas;
+  final String? namaAktivitas;
+  final String? alamat;
   final String? jenisKelamin;
   final int jumlahComment;
-  final int jumlahKontributor; // Posts made as kontributor
+  final int jumlahKontributor;
   final int jumlahLike;
   final int jumlahShare;
-  final String nama;
   final String? nomorHp;
-  final String? photoURL;
-  final String role; // e.g., "User", "Admin"
-  final String? tanggalLahir; // Consider DateTime if you parse it
+  final String? tanggalLahir;
 
   UserModel({
     required this.id,
+    required this.email,
+    required this.nama,
+    required this.role,
+    required this.isActive, // ✨ Tambahkan di constructor
+    this.waktu,
+    this.photoURL,
     this.aktivitas,
     this.namaAktivitas,
-    this.waktu,
     this.alamat,
-    required this.email,
     this.jenisKelamin,
     required this.jumlahComment,
     required this.jumlahKontributor,
     required this.jumlahLike,
     required this.jumlahShare,
-    required this.nama,
     this.nomorHp,
-    this.photoURL,
-    required this.role,
     this.tanggalLahir,
   });
 
@@ -42,40 +46,42 @@ class UserModel {
     final data = snapshot.data();
     return UserModel(
       id: snapshot.id,
+      email: data?['email'] ?? '',
+      nama: data?['nama'] ?? '',
+      role: data?['role'] ?? 'User',
+      isActive: data?['isActive'] ?? true, // ✨ Ambil data, default ke true (Aktif)
+      waktu: (data?['waktu'] as Timestamp?)?.toDate(),
+      photoURL: data?['photoURL'],
       aktivitas: data?['aktivitas'],
       namaAktivitas: data?['namaAktivitas'],
-      waktu: (data?['waktu'] as Timestamp?)?.toDate(),
       alamat: data?['alamat'],
-      email: data?['email'] ?? '',
-      jenisKelamin: data?['jenis_kelamin'], // Note underscore
+      jenisKelamin: data?['jenis_kelamin'],
       jumlahComment: data?['jumlahComment'] ?? 0,
       jumlahKontributor: data?['jumlahKontributor'] ?? 0,
       jumlahLike: data?['jumlahLike'] ?? 0,
       jumlahShare: data?['jumlahShare'] ?? 0,
-      nama: data?['nama'] ?? '',
-      nomorHp: data?['nomor_hp'], // Note underscore
-      photoURL: data?['photoURL'],
-      role: data?['role'] ?? 'User',
-      tanggalLahir: data?['tanggal_lahir'], // Note underscore
+      nomorHp: data?['nomor_hp'],
+      tanggalLahir: data?['tanggal_lahir'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
+      'email': email,
+      'nama': nama,
+      'role': role,
+      'isActive': isActive, // ✨ Tambahkan saat menyimpan
+      if (waktu != null) 'waktu': Timestamp.fromDate(waktu!),
+      if (photoURL != null) 'photoURL': photoURL,
       if (aktivitas != null) 'aktivitas': aktivitas,
       if (namaAktivitas != null) 'namaAktivitas': namaAktivitas,
-      if (waktu != null) 'waktu': Timestamp.fromDate(waktu!),
       if (alamat != null) 'alamat': alamat,
-      'email': email,
       if (jenisKelamin != null) 'jenis_kelamin': jenisKelamin,
       'jumlahComment': jumlahComment,
       'jumlahKontributor': jumlahKontributor,
       'jumlahLike': jumlahLike,
       'jumlahShare': jumlahShare,
-      'nama': nama,
       if (nomorHp != null) 'nomor_hp': nomorHp,
-      if (photoURL != null) 'photoURL': photoURL,
-      'role': role,
       if (tanggalLahir != null) 'tanggal_lahir': tanggalLahir,
     };
   }

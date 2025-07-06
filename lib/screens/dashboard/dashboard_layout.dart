@@ -12,7 +12,7 @@ import 'package:admin_dashboard_template/screens/dashboard/overview_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/products_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/profile_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/user_management/settings_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/user_management/users_admin_management_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/user_management/users_page.dart';
 import 'package:admin_dashboard_template/widgets/dashboard/app_bar_actions.dart';
 import 'package:admin_dashboard_template/widgets/dashboard/sidebar.dart';
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';

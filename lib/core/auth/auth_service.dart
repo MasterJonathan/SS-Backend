@@ -1,42 +1,50 @@
-import 'package:flutter/material.dart';
+// lib/core/auth/auth_service.dart
 
-class AuthService extends ChangeNotifier {
-  bool _isAuthenticated = false;
-  String? _userId; // Placeholder for user data
-  String? _userEmail;
+import 'package:firebase_auth/firebase_auth.dart';
 
-  bool get isAuthenticated => _isAuthenticated;
-  String? get userId => _userId;
-  String? get userEmail => _userEmail;
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<bool> login(String email, String password) async {
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
-    if (email == 'admin@example.com' && password == 'password') {
-      _isAuthenticated = true;
-      _userId = 'admin_user_id';
-      _userEmail = email;
-      notifyListeners();
-      return true;
+  /// Stream untuk memantau perubahan status otentikasi (login/logout).
+  /// Sangat berguna untuk mengarahkan pengguna secara otomatis.
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  /// Mendapatkan instance pengguna yang sedang login.
+  /// Bisa null jika tidak ada yang login.
+  User? get currentUser => _auth.currentUser;
+
+  /// Fungsi untuk login dengan email dan password.
+  /// Melemparkan [FirebaseAuthException] jika terjadi error.
+  Future<UserCredential?> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      // Menggunakan metode dari FirebaseAuth untuk login
+      return await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+    } on FirebaseAuthException {
+      // Biarkan error dilempar ke atas (ke AuthProvider) untuk ditangani.
+      rethrow;
     }
-    return false;
   }
 
-  Future<bool> register(String email, String password, String fullName) async {
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
-    // For demo, auto-login after register
-    _isAuthenticated = true;
-    _userId = 'new_user_id';
-    _userEmail = email;
-    notifyListeners();
-    return true;
+  /// Fungsi untuk mendaftar pengguna baru dengan email dan password.
+  /// Melemparkan [FirebaseAuthException] jika terjadi error.
+  Future<UserCredential?> createUserWithEmailAndPassword(String email, String password) async {
+    try {
+      // Menggunakan metode dari FirebaseAuth untuk membuat user baru
+      return await _auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+    } on FirebaseAuthException {
+      // Biarkan error dilempar ke atas (ke AuthProvider) untuk ditangani.
+      rethrow;
+    }
   }
 
-  Future<void> logout() async {
-    _isAuthenticated = false;
-    _userId = null;
-    _userEmail = null;
-    notifyListeners();
+  /// Fungsi untuk logout.
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 }

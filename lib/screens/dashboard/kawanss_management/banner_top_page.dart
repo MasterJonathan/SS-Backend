@@ -1,8 +1,10 @@
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/banner_model.dart'; // Import model
+import 'package:admin_dashboard_template/models/banner_model.dart';
+import 'package:admin_dashboard_template/providers/banner_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class BannerTopPage extends StatefulWidget {
   const BannerTopPage({super.key});
@@ -12,17 +14,8 @@ class BannerTopPage extends StatefulWidget {
 }
 
 class _BannerTopPageState extends State<BannerTopPage> {
-  // Mock data based on the image
-  final List<BannerTopModel> _banners = [
-    BannerTopModel(id: '1', namaBanner: 'Indonesia Bangkit', tanggalAktifMulai: DateTime(2020, 11, 17, 2, 39), tanggalAktifSelesai: DateTime(2021, 1, 31, 12, 0), bannerImageUrl: 'https://via.placeholder.com/300x50/FF0000/FFFFFF?Text=Indonesia+Bangkit', status: false, hits: 7692, tanggalPosting: DateTime(2020, 11, 17, 14, 57, 1), dipostingOleh: 'Grafis New Media'),
-    BannerTopModel(id: '2', namaBanner: 'Visual Radio', tanggalAktifMulai: DateTime(2023, 4, 10, 11, 30), tanggalAktifSelesai: DateTime(2023, 5, 10, 11, 31), bannerImageUrl: 'https://via.placeholder.com/300x50/0000FF/FFFFFF?Text=Visual+Radio+LIVE', status: true, hits: 7023, tanggalPosting: DateTime(2023, 4, 10, 11, 33, 24), dipostingOleh: 'Sugeng'),
-    BannerTopModel(id: '3', namaBanner: 'SURABAYA BERGERAK UPDATE', tanggalAktifMulai: DateTime(2022, 11, 9, 8, 9), tanggalAktifSelesai: DateTime(2022, 12, 31, 8, 9), bannerImageUrl: 'https://via.placeholder.com/300x50/000000/FFFFFF?Text=Surabaya+Bergerak', status: true, hits: 4039, tanggalPosting: DateTime(2022, 11, 9, 20, 13, 10), dipostingOleh: 'Administrator'),
-    BannerTopModel(id: '4', namaBanner: 'YAMAHA 08 JUNI 2023', tanggalAktifMulai: DateTime(2023, 6, 8, 11, 43), tanggalAktifSelesai: DateTime(2023, 6, 21, 11, 59), bannerImageUrl: 'https://via.placeholder.com/300x50/333333/FFFFFF?Text=Yamaha+WRC', status: true, hits: 1879, tanggalPosting: DateTime(2023, 6, 8, 11, 50, 40), dipostingOleh: 'Grafis New Media'),
-    BannerTopModel(id: '5', namaBanner: 'Yamaha Mei 2023', tanggalAktifMulai: DateTime(2023, 5, 13, 12, 0), tanggalAktifSelesai: DateTime(2023, 5, 26, 12, 19, 51), bannerImageUrl: 'https://via.placeholder.com/300x50/007bff/FFFFFF?Text=Yamaha+Blue', status: true, hits: 1471, tanggalPosting: DateTime(2023, 5, 13, 12, 19, 51), dipostingOleh: 'Sugeng'),
-  ];
-
-  late List<BannerTopModel> _filteredBanners;
-  String _searchTerm = "";
+  late List<BannerTopModel> _filteredData;
+  final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd\nHH:mm:ss');
   final DateFormat _rangeDateFormatter = DateFormat('dd MMMM yyyy HH:mm:ss');
   String _entriesToShow = '10';
@@ -30,135 +23,144 @@ class _BannerTopPageState extends State<BannerTopPage> {
   @override
   void initState() {
     super.initState();
-    _filteredBanners = _banners;
-  }
+    final provider = Provider.of<BannerProvider>(context, listen: false);
+    _filteredData = provider.banners;
 
-  void _filterBanners(String query) {
-    setState(() {
-      _searchTerm = query;
-      if (query.isEmpty) {
-        _filteredBanners = _banners;
-      } else {
-        _filteredBanners = _banners
-            .where((banner) =>
-                banner.namaBanner.toLowerCase().contains(query.toLowerCase()) ||
-                banner.dipostingOleh.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+    _searchController.addListener(() {
+      setState(() {});
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      key: const PageStorageKey('bannerTopPage'),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Header dan Breadcrumb
-          _buildHeader(),
-          const SizedBox(height: 24),
-
-          // 2. Konten utama di dalam CustomCard
-          CustomCard(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Tombol Tambah
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.add, size: 16),
-                  label: const Text('Tambah Banner Top Kawan SS'),
-                  onPressed: () {
-                    // Logic untuk membuka dialog/halaman tambah banner
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                // Kontrol entri dan pencarian
-                _buildTableControls(),
-                const SizedBox(height: 20),
-                
-                // Tabel Data
-                SizedBox(
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: _buildDataTable(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Banner Top Kawan SS Management',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Halaman untuk mengatur Banner Top Kawan SS',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.foreground.withOpacity(0.6)),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            const Icon(Icons.home, color: AppColors.primary, size: 16),
-            const SizedBox(width: 4),
-            Text('Home', style: TextStyle(color: AppColors.primary)),
-            const SizedBox(width: 4),
-            Icon(Icons.chevron_right, color: AppColors.foreground.withOpacity(0.5), size: 18),
-            const SizedBox(width: 4),
-            Text('Banner Top Kawan SS Management', style: TextStyle(color: AppColors.foreground)),
-          ],
-        )
-      ],
-    );
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
   
+  void _performFilter(String query, List<BannerTopModel> allBanners) {
+    if (query.isEmpty) {
+      _filteredData = allBanners;
+    } else {
+      _filteredData = allBanners.where((banner) {
+        final namaBanner = banner.namaBanner.toLowerCase();
+        final dipostingOleh = banner.dipostingOleh.toLowerCase();
+        return namaBanner.contains(query.toLowerCase()) ||
+               dipostingOleh.contains(query.toLowerCase());
+      }).toList();
+    }
+  }
+
+  void _showAddEditDialog({BannerTopModel? banner}) {
+    final isEditing = banner != null;
+    final formKey = GlobalKey<FormState>();
+    final namaController = TextEditingController(text: banner?.namaBanner);
+    final imageUrlController = TextEditingController(text: banner?.bannerImageUrl);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(isEditing ? 'Edit Banner' : 'Tambah Banner'),
+          content: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(controller: namaController, decoration: const InputDecoration(labelText: 'Nama Banner'), validator: (v) => v!.isEmpty ? 'Wajib diisi' : null),
+                  const SizedBox(height: 16),
+                  TextFormField(controller: imageUrlController, decoration: const InputDecoration(labelText: 'Image URL'), validator: (v) => v!.isEmpty ? 'Wajib diisi' : null),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Batal')),
+            ElevatedButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  final provider = context.read<BannerProvider>();
+                  final now = DateTime.now();
+
+                  if (isEditing) {
+                    final updatedBanner = BannerTopModel(id: banner.id, namaBanner: namaController.text, bannerImageUrl: imageUrlController.text, tanggalAktifMulai: banner.tanggalAktifMulai, tanggalAktifSelesai: banner.tanggalAktifSelesai, status: banner.status, hits: banner.hits, tanggalPosting: banner.tanggalPosting, dipostingOleh: banner.dipostingOleh);
+                    await provider.updateBanner(updatedBanner);
+                  } else {
+                    final newBanner = BannerTopModel(id: '', namaBanner: namaController.text, bannerImageUrl: imageUrlController.text, tanggalAktifMulai: now, tanggalAktifSelesai: now.add(const Duration(days: 30)), status: true, hits: 0, tanggalPosting: now, dipostingOleh: 'Admin');
+                    await provider.addBanner(newBanner);
+                  }
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<BannerProvider>(
+      builder: (context, provider, child) {
+        _performFilter(_searchController.text, provider.banners);
+
+        // --- PERUBAHAN UTAMA ADA DI SINI ---
+        // Widget root sekarang adalah Column, bukan SingleChildScrollView.
+        // crossAxisAlignment: CrossAxisAlignment.start akan membuat kontennya
+        // rata kiri dan berada di atas secara default.
+        return Column(
+          key: const PageStorageKey('bannerTopPage'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomCard(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ElevatedButton.icon(icon: const Icon(Icons.add, size: 16), label: const Text('Tambah Banner Top Kawan SS'), onPressed: () => _showAddEditDialog()),
+                  const SizedBox(height: 20),
+                  _buildTableControls(),
+                  const SizedBox(height: 20),
+                  if (provider.state == BannerViewState.Busy && provider.banners.isEmpty)
+                    const Center(child: CircularProgressIndicator())
+                  else if (provider.errorMessage != null)
+                    Center(child: Text('Error: ${provider.errorMessage}'))
+                  else
+                    SizedBox(
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: _buildDataTable(provider),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        );
+        // ------------------------------------
+      },
+    );
+  }
+
   Widget _buildTableControls() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Kontrol 'Show entries'
         Row(
           children: [
             const Text('Show'),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.foreground.withOpacity(0.2)),
-                borderRadius: BorderRadius.circular(4),
-              ),
+              decoration: BoxDecoration(border: Border.all(color: AppColors.foreground.withOpacity(0.2)), borderRadius: BorderRadius.circular(4)),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: _entriesToShow,
-                  items: <String>['10', '25', '50', '100'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _entriesToShow = newValue!;
-                      // Logic to refresh table data with new entry limit
-                    });
-                  },
+                  items: <String>['10', '25', '50', '100'].map((String value) => DropdownMenuItem<String>(value: value, child: Text(value))).toList(),
+                  onChanged: (String? newValue) => setState(() => _entriesToShow = newValue!),
                 ),
               ),
             ),
@@ -166,24 +168,19 @@ class _BannerTopPageState extends State<BannerTopPage> {
             const Text('entries'),
           ],
         ),
-        // Kotak 'Search'
         SizedBox(
           width: 250,
           child: TextField(
-            decoration: const InputDecoration(
-              labelText: 'Search:',
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            ),
-            onChanged: _filterBanners,
+            controller: _searchController,
+            decoration: const InputDecoration(labelText: 'Search:', contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDataTable() {
+  Widget _buildDataTable(BannerProvider provider) {
     return DataTable(
-      // Theming diambil dari AppTheme
       columns: const [
         DataColumn(label: Text('Aksi')),
         DataColumn(label: Text('Nama Banner\nTop')),
@@ -194,65 +191,40 @@ class _BannerTopPageState extends State<BannerTopPage> {
         DataColumn(label: Text('Tanggal\nPosting')),
         DataColumn(label: Text('Diposting\nOleh')),
       ],
-      rows: _filteredBanners.map((banner) {
-        return DataRow(cells: [
-          DataCell(
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit, size: 18),
-                  color: AppColors.primary,
-                  onPressed: () {},
-                  tooltip: 'Edit Banner',
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 18),
-                  color: AppColors.error,
-                  onPressed: () {},
-                  tooltip: 'Delete Banner',
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ],
-            ),
-          ),
-          DataCell(Text(banner.namaBanner)),
-          DataCell(
-            Text(
-              '${_rangeDateFormatter.format(banner.tanggalAktifMulai)} Sampai\n${_rangeDateFormatter.format(banner.tanggalAktifSelesai)}',
-              style: const TextStyle(fontSize: 12),
-            ),
-          ),
-          DataCell(
-            SizedBox(
-              width: 200, // Beri lebar agar banner tidak terlalu kecil
-              child: Image.network(
-                banner.bannerImageUrl,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image_not_supported, color: AppColors.error);
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
-                },
+      rows: _filteredData.map((banner) {
+        return DataRow(
+          cells: [
+            DataCell(
+              Row(
+                children: [
+                  _actionButton(icon: Icons.edit, color: AppColors.primary, tooltip: 'Edit Banner', onPressed: () => _showAddEditDialog(banner: banner)),
+                  const SizedBox(width: 8),
+                  _actionButton(icon: Icons.close, color: AppColors.error, tooltip: 'Delete Banner', onPressed: () async => await provider.deleteBanner(banner.id)),
+                ],
               ),
             ),
-          ),
-          DataCell(
-            Icon(
-              banner.status ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: banner.status ? AppColors.success : AppColors.foreground.withOpacity(0.5),
-            ),
-          ),
-          DataCell(Text(banner.hits.toString())),
-          DataCell(Text(_dateFormatter.format(banner.tanggalPosting))),
-          DataCell(Text(banner.dipostingOleh)),
-        ]);
+            DataCell(Text(banner.namaBanner)),
+            DataCell(Text('${_rangeDateFormatter.format(banner.tanggalAktifMulai)} Sampai\n${_rangeDateFormatter.format(banner.tanggalAktifSelesai)}', style: const TextStyle(fontSize: 12))),
+            DataCell(SizedBox(width: 200, child: Image.network(banner.bannerImageUrl, fit: BoxFit.contain, errorBuilder: (c, o, s) => const Icon(Icons.image_not_supported, color: AppColors.error)))),
+            DataCell(Icon(banner.status ? Icons.check_circle : Icons.radio_button_unchecked, color: banner.status ? AppColors.success : AppColors.foreground.withOpacity(0.5))),
+            DataCell(Text(banner.hits.toString())),
+            DataCell(Text(_dateFormatter.format(banner.tanggalPosting))),
+            DataCell(Text(banner.dipostingOleh)),
+          ],
+        );
       }).toList(),
+    );
+  }
+
+  Widget _actionButton({required IconData icon, required Color color, required String tooltip, VoidCallback? onPressed}) {
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: ElevatedButton(
+        onPressed: onPressed ?? () {},
+        style: ElevatedButton.styleFrom(backgroundColor: color, foregroundColor: AppColors.surface, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)), padding: EdgeInsets.zero),
+        child: Tooltip(message: tooltip, child: Icon(icon, size: 16)),
+      ),
     );
   }
 }

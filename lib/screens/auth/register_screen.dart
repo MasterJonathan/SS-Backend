@@ -1,6 +1,7 @@
-import 'package:admin_dashboard_template/core/auth/auth_service.dart';
-import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
+// lib/screens/auth/register_screen.dart
+
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
+import 'package:admin_dashboard_template/providers/authentication_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,48 +15,45 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _fullNameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isLoading = false;
   String? _errorMessage;
 
-  Future<void> _register() async {
+  Future<void> _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-      final authService = Provider.of<AuthService>(context, listen: false);
-      final success = await authService.register(
+      setState(() { _errorMessage = null; });
+
+      final authProvider = context.read<AuthenticationProvider>();
+      final success = await authProvider.signUp(
         _emailController.text,
         _passwordController.text,
-        _fullNameController.text,
+        _nameController.text,
       );
-      if (mounted) {
+
+      // --- PERUBAHAN PENTING ADA DI SINI ---
+      if (success && mounted) {
+        // Tampilkan pesan sukses dan arahkan ke halaman login
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Registrasi berhasil! Silakan login.'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        Navigator.of(context).pop(); // Kembali ke halaman login
+      } else if (!success && mounted) {
         setState(() {
-          _isLoading = false;
+          _errorMessage = 'Registrasi gagal. Email mungkin sudah terdaftar atau password terlalu lemah.';
         });
-        if (success) {
-          // For demo, directly navigate to dashboard.
-          // In a real app, you might show a success message or email verification step.
-          Navigator.of(
-            context,
-          ).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
-        } else {
-          setState(() {
-            _errorMessage = 'Registration failed. Please try again.';
-            // You could provide more specific error messages from the authService
-          });
-        }
       }
+      // ------------------------------------
     }
   }
 
   @override
   void dispose() {
-    _fullNameController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -64,156 +62,78 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(minWidth: 400.0, maxWidth: 560.0),
+    return Consumer<AuthenticationProvider>(
+      builder: (context, authProvider, child) {
+        return Scaffold(
+          backgroundColor: AppColors.surface,
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 450),
               child: CustomCard(
                 padding: const EdgeInsets.all(24.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.person_add_alt_1_outlined,
-                        size: 60,
-                        color: AppColors.primary,
-                      ),
+                      const Icon(Icons.person_add_alt_1_outlined, size: 60, color: AppColors.primary),
                       const SizedBox(height: 16),
-                      Text(
-                        'Create Admin Account',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+                      Text('Create Admin Account', style: Theme.of(context).textTheme.headlineMedium),
                       const SizedBox(height: 24),
                       TextFormField(
-                        controller: _fullNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Full Name',
-                          prefixIcon: Icon(Icons.person_outline),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your full name';
-                          }
-                          return null;
-                        },
+                        controller: _nameController,
+                        decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person_outline)),
+                        validator: (value) => value == null || value.isEmpty ? 'Masukkan nama lengkap Anda' : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email_outlined),
-                        ),
+                        decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          if (!value.contains('@') || !value.contains('.')) {
-                            return 'Enter a valid email address';
-                          }
-                          return null;
-                        },
+                        validator: (value) => value == null || value.isEmpty || !value.contains('@') ? 'Masukkan email yang valid' : null,
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        crossAxisAlignment:
-                            CrossAxisAlignment
-                                .start, // Optional: aligns validators nicely
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _passwordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Password',
-                                prefixIcon: Icon(Icons.lock_outline_rounded),
-                              ),
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a password';
-                                }
-                                if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 16,
-                          ), // <--- Add some spacing between fields
-                          Expanded(
-                            // <--- Wrap with Expanded
-                            child: TextFormField(
-                              controller: _confirmPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Confirm Password',
-                                prefixIcon: Icon(
-                                  Icons.lock_outlined,
-                                ), // Changed icon for visual distinction
-                              ),
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please confirm your password';
-                                }
-                                if (value != _passwordController.text) {
-                                  return 'Passwords do not match';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ],
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.lock_outline_rounded)),
+                        obscureText: true,
+                        validator: (value) => value == null || value.isEmpty || value.length < 6 ? 'Password minimal 6 karakter' : null,
                       ),
                       const SizedBox(height: 16),
-        
-                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        decoration: const InputDecoration(labelText: 'Confirm Password', prefixIcon: Icon(Icons.lock_outlined)),
+                        obscureText: true,
+                        validator: (value) => value != _passwordController.text ? 'Password tidak cocok' : null,
+                      ),
                       if (_errorMessage != null)
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            _errorMessage!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontSize: 14,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Text(_errorMessage!, textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 14)),
                         ),
                       const SizedBox(height: 24),
-                      _isLoading
-                          ? const CircularProgressIndicator()
-                          : SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _register,
-                              child: const Text('Register'),
-                            ),
-                          ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: authProvider.status == AuthStatus.Authenticating ? null : () => _register(context),
+                          child: authProvider.status == AuthStatus.Authenticating
+                              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                              : const Text('Register'),
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Go back to login
-                          // Or use Navigator.of(context).pushReplacementNamed(AppRoutes.login);
-                        },
-                        child: const Text('Already have an account? Login'),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Sudah punya akun? Login'),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

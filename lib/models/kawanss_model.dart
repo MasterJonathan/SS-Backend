@@ -1,15 +1,17 @@
+// lib/models/kawanss_model.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class KawanssModel {
-  final String id; // Document ID
-  final String? accountName; // Field name is 'accountName'
+  final String id;
+  final String? accountName;
   final bool deleted;
   final String? deskripsi;
   final String? gambar;
   final int jumlahComment;
-  final int jumlahLaporan; // Field name is 'jumlahLaporan'
+  final int jumlahLaporan;
   final int jumlahLike;
-  final String? kawanssPhotoURL; // Field name is 'kawanssPhotoURL'
+  final String? kawanssPhotoURL;
   final String? lokasi;
   final String? title;
   final DateTime uploadDate;

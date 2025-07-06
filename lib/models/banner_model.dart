@@ -1,5 +1,7 @@
 // lib/models/banner_model.dart
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class BannerTopModel {
   final String id;
   final String namaBanner;
@@ -22,4 +24,32 @@ class BannerTopModel {
     required this.tanggalPosting,
     required this.dipostingOleh,
   });
+
+  factory BannerTopModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
+    final data = snapshot.data();
+    return BannerTopModel(
+      id: snapshot.id,
+      namaBanner: data?['namaBanner'] ?? '',
+      tanggalAktifMulai: (data?['tanggalAktifMulai'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      tanggalAktifSelesai: (data?['tanggalAktifSelesai'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      bannerImageUrl: data?['bannerImageUrl'] ?? '',
+      status: data?['status'] ?? false,
+      hits: data?['hits'] ?? 0,
+      tanggalPosting: (data?['tanggalPosting'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      dipostingOleh: data?['dipostingOleh'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'namaBanner': namaBanner,
+      'tanggalAktifMulai': Timestamp.fromDate(tanggalAktifMulai),
+      'tanggalAktifSelesai': Timestamp.fromDate(tanggalAktifSelesai),
+      'bannerImageUrl': bannerImageUrl,
+      'status': status,
+      'hits': hits,
+      'tanggalPosting': Timestamp.fromDate(tanggalPosting),
+      'dipostingOleh': dipostingOleh,
+    };
+  }
 }
