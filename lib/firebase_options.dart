@@ -23,9 +23,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
@@ -41,48 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDmJNh6Vg6xCHJ_5thSdJ-My-WyeXqrI8I',
-    appId: '1:934435131428:web:7dbe107f4e70f0984e08b1',
-    messagingSenderId: '934435131428',
-    projectId: 'kpss-duplicate',
-    authDomain: 'kpss-duplicate.firebaseapp.com',
-    storageBucket: 'kpss-duplicate.firebasestorage.app',
-    measurementId: 'G-KHEMK62LFH',
+    apiKey: 'AIzaSyDKzokfJBvf90DCXB0OycHOa4RVJYsZ_-U',
+    appId: '1:105695732948:web:f6c50458f99221216dc741',
+    messagingSenderId: '105695732948',
+    projectId: 'ss-sna',
+    authDomain: 'ss-sna.firebaseapp.com',
+    storageBucket: 'ss-sna.firebasestorage.app',
+    measurementId: 'G-WCMCDKXESZ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBS9-HV95JJIUVF6tUY-zX75VyTWIc6iJ0',
-    appId: '1:934435131428:android:359e87fd54587d144e08b1',
-    messagingSenderId: '934435131428',
-    projectId: 'kpss-duplicate',
-    storageBucket: 'kpss-duplicate.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBxJtcAZL6cNn9gcj9ka0ix353EwQzjMb4',
-    appId: '1:934435131428:ios:caa255110fed711b4e08b1',
-    messagingSenderId: '934435131428',
-    projectId: 'kpss-duplicate',
-    storageBucket: 'kpss-duplicate.firebasestorage.app',
-    iosBundleId: 'com.example.adminDashboardTemplate',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBxJtcAZL6cNn9gcj9ka0ix353EwQzjMb4',
-    appId: '1:934435131428:ios:caa255110fed711b4e08b1',
-    messagingSenderId: '934435131428',
-    projectId: 'kpss-duplicate',
-    storageBucket: 'kpss-duplicate.firebasestorage.app',
-    iosBundleId: 'com.example.adminDashboardTemplate',
+    apiKey: 'AIzaSyCrfF1Dpc-0r1NlHjJ1kS7PZzWhOGDVwAU',
+    appId: '1:105695732948:android:3ee21d5963113e206dc741',
+    messagingSenderId: '105695732948',
+    projectId: 'ss-sna',
+    storageBucket: 'ss-sna.firebasestorage.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDmJNh6Vg6xCHJ_5thSdJ-My-WyeXqrI8I',
-    appId: '1:934435131428:web:d16a0244488984d64e08b1',
-    messagingSenderId: '934435131428',
-    projectId: 'kpss-duplicate',
-    authDomain: 'kpss-duplicate.firebaseapp.com',
-    storageBucket: 'kpss-duplicate.firebasestorage.app',
-    measurementId: 'G-41VGWQJKV2',
+    apiKey: 'AIzaSyDKzokfJBvf90DCXB0OycHOa4RVJYsZ_-U',
+    appId: '1:105695732948:web:38a1a53f040fb30d6dc741',
+    messagingSenderId: '105695732948',
+    projectId: 'ss-sna',
+    authDomain: 'ss-sna.firebaseapp.com',
+    storageBucket: 'ss-sna.firebasestorage.app',
+    measurementId: 'G-TMSYX16EGD',
   );
 }

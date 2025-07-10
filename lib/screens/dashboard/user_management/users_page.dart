@@ -166,14 +166,14 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                               ),
                               
                               DataCell(Text(user.waktu != null ? _dateFormatter.format(user.waktu!) : '-')),
-                              DataCell(
-                                Chip(
-                                  label: Text(user.isActive ? 'Active' : 'Inactive'),
-                                  backgroundColor: user.isActive ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
-                                  labelStyle: TextStyle(color: user.isActive ? AppColors.success : AppColors.error),
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                ),
-                              ),
+                              // DataCell(
+                              //   Chip(
+                              //     label: Text(user.isActive ? 'Active' : 'Inactive'),
+                              //     backgroundColor: user.isActive ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
+                              //     labelStyle: TextStyle(color: user.isActive ? AppColors.success : AppColors.error),
+                              //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              //   ),
+                              // ),
                               DataCell(
                                 Row(
                                   children: [
@@ -183,20 +183,20 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                                       onPressed: () => _showAddEditDialog(user: user),
                                     ),
                                     
-                                    IconButton(
-                                      icon: Icon(
-                                        user.isActive ? Icons.block : Icons.power_settings_new,
-                                        color: user.isActive ? AppColors.error : AppColors.success,
-                                      ),
-                                      tooltip: user.isActive ? 'Nonaktifkan User' : 'Aktifkan User',
-                                      onPressed: () async {
-                                        final newStatus = !user.isActive;
-                                        await context.read<UserProvider>().updateUserPartial(
-                                          user.id,
-                                          {'isActive': newStatus},
-                                        );
-                                      },
-                                    ),
+                                    // IconButton(
+                                    //   icon: Icon(
+                                    //     user.isActive ? Icons.block : Icons.power_settings_new,
+                                    //     color: user.isActive ? AppColors.error : AppColors.success,
+                                    //   ),
+                                    //   tooltip: user.isActive ? 'Nonaktifkan User' : 'Aktifkan User',
+                                    //   onPressed: () async {
+                                    //     final newStatus = !user.isActive;
+                                    //     await context.read<UserProvider>().updateUserPartial(
+                                    //       user.id,
+                                    //       {'isActive': newStatus},
+                                    //     );
+                                    //   },
+                                    // ),
                                   ],
                                 ),
                               ),

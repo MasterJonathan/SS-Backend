@@ -1,21 +1,14 @@
-
+// lib/models/user_model.dart
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-
-  
-
-  final String id;
+  final String id; // Document ID (sinkron dengan UID dari Auth)
   final String email;
   final String nama;
   final String role;
-  final bool isActive; 
-  final DateTime? waktu; 
   final String? photoURL;
-  
-  final int? aktivitas;
-  final String? namaAktivitas;
+  final DateTime? waktu; // Tanggal registrasi/aktivitas terakhir
   final String? alamat;
   final String? jenisKelamin;
   final int jumlahComment;
@@ -24,17 +17,15 @@ class UserModel {
   final int jumlahShare;
   final String? nomorHp;
   final String? tanggalLahir;
-
+  // 'aktivitas' dan 'namaAktivitas' bisa ditambahkan jika diperlukan di UI admin
+  
   UserModel({
     required this.id,
     required this.email,
     required this.nama,
     required this.role,
-    required this.isActive, 
-    this.waktu,
     this.photoURL,
-    this.aktivitas,
-    this.namaAktivitas,
+    this.waktu,
     this.alamat,
     this.jenisKelamin,
     required this.jumlahComment,
@@ -50,13 +41,10 @@ class UserModel {
     return UserModel(
       id: snapshot.id,
       email: data?['email'] ?? '',
-      nama: data?['nama'] ?? '',
+      nama: data?['nama'] ?? 'No Name',
       role: data?['role'] ?? 'User',
-      isActive: data?['isActive'] ?? true, 
-      waktu: (data?['waktu'] as Timestamp?)?.toDate(),
       photoURL: data?['photoURL'],
-      aktivitas: data?['aktivitas'],
-      namaAktivitas: data?['namaAktivitas'],
+      waktu: (data?['waktu'] as Timestamp?)?.toDate(),
       alamat: data?['alamat'],
       jenisKelamin: data?['jenis_kelamin'],
       jumlahComment: data?['jumlahComment'] ?? 0,
@@ -73,11 +61,9 @@ class UserModel {
       'email': email,
       'nama': nama,
       'role': role,
-      'isActive': isActive, 
-      if (waktu != null) 'waktu': Timestamp.fromDate(waktu!),
+      'id': id, // Simpan juga ID di dalam dokumen untuk kemudahan query
       if (photoURL != null) 'photoURL': photoURL,
-      if (aktivitas != null) 'aktivitas': aktivitas,
-      if (namaAktivitas != null) 'namaAktivitas': namaAktivitas,
+      if (waktu != null) 'waktu': Timestamp.fromDate(waktu!),
       if (alamat != null) 'alamat': alamat,
       if (jenisKelamin != null) 'jenis_kelamin': jenisKelamin,
       'jumlahComment': jumlahComment,
@@ -86,6 +72,10 @@ class UserModel {
       'jumlahShare': jumlahShare,
       if (nomorHp != null) 'nomor_hp': nomorHp,
       if (tanggalLahir != null) 'tanggal_lahir': tanggalLahir,
+      // Inisialisasi 'aktivitas' jika diperlukan
+      'aktivitas': FieldValue.arrayUnion([
+        {'namaAktivitas': 'User registration', 'waktu': Timestamp.now()}
+      ]),
     };
   }
 }

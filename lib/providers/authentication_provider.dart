@@ -1,4 +1,4 @@
-
+// lib/providers/authentication_provider.dart
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/auth/auth_service.dart';
@@ -32,14 +32,8 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   void _initialize() {
-    final initialUser = _authService.currentUser;
-    if (initialUser != null) {
-      _status = AuthStatus.Authenticating;
-      _onAuthStateChanged(initialUser);
-    } else {
-      _status = AuthStatus.Unauthenticated;
-    }
     _authSubscription = _authService.authStateChanges.listen(_onAuthStateChanged);
+    _onAuthStateChanged(_authService.currentUser); // Periksa status awal
   }
 
   Future<void> _onAuthStateChanged(User? user) async {
@@ -48,12 +42,21 @@ class AuthenticationProvider extends ChangeNotifier {
       _firebaseUser = null;
       _userModel = null;
     } else {
-      if (_firebaseUser?.uid != user.uid) {
-        _firebaseUser = user;
-        _userModel = await _firestoreService.getUser(user.uid);
+      _firebaseUser = user;
+      // Ambil data profil dari Firestore setelah login/register
+      _userModel = await _firestoreService.getUser(user.uid);
+      
+      // Jika profil tidak ditemukan (misal user login dengan Google/provider lain pertama kali)
+      // Anda bisa membuat profil default di sini.
+      if (_userModel == null) {
+        print("Profil Firestore untuk user ${user.uid} tidak ditemukan. Mungkin perlu dibuatkan.");
+        // Untuk alur register, profil seharusnya sudah dibuat.
+        // Ini lebih relevan untuk Social Login.
       }
+      
       _status = AuthStatus.Authenticated;
     }
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(hasListeners) notifyListeners();
     });
@@ -63,6 +66,7 @@ class AuthenticationProvider extends ChangeNotifier {
     _setState(AuthStatus.Authenticating);
     try {
       await _authService.signInWithEmailAndPassword(email, password);
+      // _onAuthStateChanged akan dipicu secara otomatis oleh listener
       return true;
     } catch (e) {
       _setState(AuthStatus.Unauthenticated);
@@ -76,33 +80,29 @@ class AuthenticationProvider extends ChangeNotifier {
     try {
       final credential = await _authService.createUserWithEmailAndPassword(email, password);
       if (credential?.user != null) {
+        // --- INI BAGIAN PENTING UNTUK MEMBUAT PROFIL DI FIRESTORE ---
         UserModel newUser = UserModel(
-          id: credential!.user!.uid,
+          id: credential!.user!.uid, // Gunakan UID dari Auth sebagai ID dokumen
           email: email,
           nama: name,
-          role: 'Admin',
+          role: 'Admin', // Peran default untuk admin panel
+          photoURL: 'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg',
+          waktu: DateTime.now(),
           jumlahComment: 0,
           jumlahKontributor: 0,
           jumlahLike: 0,
           jumlahShare: 0,
-          aktivitas: 0,
-          namaAktivitas: 'User Registration',
-          waktu: DateTime.now(),
           alamat: '',
           jenisKelamin: '',
           nomorHp: '',
-          photoURL: '',
           tanggalLahir: '',
-          isActive: true,
         );
-        await _firestoreService.addUser(newUser);
-        
-        
-        
-        
-        
-        await _authService.signOut(); 
-        
+        // Panggil service untuk menyimpan profil baru ini ke Firestore
+        await _firestoreService.setUserProfile(newUser);
+        // -------------------------------------------------------------
+
+        // Setelah berhasil mendaftar dan membuat profil, langsung logout.
+        await _authService.signOut();
         
         return true;
       }
@@ -128,7 +128,7 @@ class AuthenticationProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _authSubscription?.cancel();
+    _authSubscription.cancel();
     super.dispose();
   }
 }

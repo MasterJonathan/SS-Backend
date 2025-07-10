@@ -72,14 +72,14 @@ class _ProfilePageState extends State<ProfilePage> {
           jumlahLike: authProvider.user!.jumlahLike,
           jumlahShare: authProvider.user!.jumlahShare,
           
-          aktivitas: authProvider.user!.aktivitas,
-          namaAktivitas: authProvider.user!.namaAktivitas,
+          // aktivitas: authProvider.user!.aktivitas,
+          // namaAktivitas: authProvider.user!.namaAktivitas,
           waktu: authProvider.user!.waktu,
           alamat: authProvider.user!.alamat,
           jenisKelamin: authProvider.user!.jenisKelamin,
           nomorHp: authProvider.user!.nomorHp,
           tanggalLahir: authProvider.user!.tanggalLahir,
-          isActive: authProvider.user!.isActive
+          // isActive: authProvider.user!.isActive
         );
 
         bool success = await userProvider.updateUser(updatedUser);
