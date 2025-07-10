@@ -31,6 +31,11 @@ class _SidebarState extends State<Sidebar> {
         page: DashboardPage.overview,
       ),
       SidebarMenuItem(
+        title: 'Laporan & Analitik',
+        icon: Icons.insights_outlined,
+        page: DashboardPage.report,
+      ),
+      SidebarMenuItem(
         title: 'User Management',
         icon: Icons.people_alt_outlined,
         isExpanded: false,
@@ -196,11 +201,6 @@ class _SidebarState extends State<Sidebar> {
         ],
       ),
       SidebarMenuItem(
-        title: 'Graph SNA',
-        icon: Icons.offline_bolt,
-        page: DashboardPage.socialnetworkanalysis,
-      ),
-      SidebarMenuItem(
         title: 'Products (Old)',
         icon: Icons.inventory_2_outlined,
         page: DashboardPage.products,
@@ -220,6 +220,7 @@ class _SidebarState extends State<Sidebar> {
         icon: Icons.edit_note_outlined,
         page: DashboardPage.forms,
       ),
+      
     ];
   }
 

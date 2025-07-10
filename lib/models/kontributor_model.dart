@@ -1,6 +1,16 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
+DateTime? _parseSafeTimestamp(dynamic value) {
+  if (value is Timestamp) return value.toDate();
+  if (value is String) {
+    try {
+      if (value.contains('/')) return DateFormat('MM/dd/yyyy HH:mm').parse(value);
+      return DateTime.parse(value);
+    } catch (e) { return null; }
+  }
+  return null;
+}
 
 class KontributorModel {
   final String id;
@@ -20,21 +30,10 @@ class KontributorModel {
   final String? telepon;
 
   KontributorModel({
-    required this.id,
-    this.accountName,
-    required this.deleted,
-    this.deskripsi,
-    this.gambar,
-    this.judul,
-    required this.jumlahComment,
-    required this.jumlahLaporan,
-    required this.jumlahLike,
-    this.kontributorPhotoURL,
-    this.lokasi,
-    required this.uploadDate,
-    this.userId,
-    this.email,
-    this.telepon,
+    required this.id, this.accountName, required this.deleted, this.deskripsi,
+    this.gambar, this.judul, required this.jumlahComment, required this.jumlahLaporan,
+    required this.jumlahLike, this.kontributorPhotoURL, this.lokasi,
+    required this.uploadDate, this.userId, this.email, this.telepon,
   });
 
   factory KontributorModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
@@ -51,7 +50,7 @@ class KontributorModel {
       jumlahLike: data?['jumlahLike'] ?? 0,
       kontributorPhotoURL: data?['kontributorPhotoURL'],
       lokasi: data?['lokasi'],
-      uploadDate: (data?['uploadDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      uploadDate: _parseSafeTimestamp(data?['uploadDate']) ?? DateTime.now(),
       userId: data?['userId'],
       email: data?['email'],
       telepon: data?['telepon'],
@@ -65,9 +64,7 @@ class KontributorModel {
       if (deskripsi != null) 'deskripsi': deskripsi,
       if (gambar != null) 'gambar': gambar,
       if (judul != null) 'judul': judul,
-      'jumlahComment': jumlahComment,
-      'jumlahLaporan': jumlahLaporan,
-      'jumlahLike': jumlahLike,
+      'jumlahComment': jumlahComment, 'jumlahLaporan': jumlahLaporan, 'jumlahLike': jumlahLike,
       if (kontributorPhotoURL != null) 'kontributorPhotoURL': kontributorPhotoURL,
       if (lokasi != null) 'lokasi': lokasi,
       'uploadDate': Timestamp.fromDate(uploadDate),

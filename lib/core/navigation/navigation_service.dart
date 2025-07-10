@@ -36,7 +36,7 @@ enum DashboardPage {
   kontributorComment,
   postinganTerlapor,
   reportManagement,
-
+  report
 }
 
 class NavigationService extends ChangeNotifier {

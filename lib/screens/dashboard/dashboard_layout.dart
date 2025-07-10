@@ -4,6 +4,7 @@ import 'package:admin_dashboard_template/screens/dashboard/kawanss_management/ba
 import 'package:admin_dashboard_template/screens/dashboard/kawanss_management/kawanss_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kontributor/kontributor_management_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kontributor/kontributor_post_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/report/report_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/calendar_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/charts_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/contributor_page.dart';
@@ -16,7 +17,6 @@ import 'package:admin_dashboard_template/screens/dashboard/user_management/users
 import 'package:admin_dashboard_template/widgets/dashboard/app_bar_actions.dart';
 import 'package:admin_dashboard_template/widgets/dashboard/sidebar.dart';
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
-import 'package:admin_dashboard_template/screens/dashboard/socialnetworkanalysis.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +29,9 @@ class DashboardLayout extends StatelessWidget {
 
       case DashboardPage.overview:
         return const OverviewPage();
+      
+      case DashboardPage.report:
+        return const ReportPage();
 
       case DashboardPage.settings:
         return const SettingsPage();
@@ -51,8 +54,6 @@ class DashboardLayout extends StatelessWidget {
 
 
 
-
-
       case DashboardPage.products:
         return const ProductsPage();
       case DashboardPage.calendar:
@@ -65,8 +66,6 @@ class DashboardLayout extends StatelessWidget {
         return const ProfilePage();
       case DashboardPage.contributor:
         return const ContributorPage();
-      case DashboardPage.socialnetworkanalysis:
-        return const Socialnetworkanalysis();
       default:
         return const OverviewPage();
     }
