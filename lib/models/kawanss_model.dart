@@ -1,6 +1,16 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
+DateTime? _parseSafeTimestamp(dynamic value) {
+  if (value is Timestamp) return value.toDate();
+  if (value is String) {
+    try {
+      if (value.contains('/')) return DateFormat('MM/dd/yyyy HH:mm').parse(value);
+      return DateTime.parse(value);
+    } catch (e) { return null; }
+  }
+  return null;
+}
 
 class KawanssModel {
   final String id;
@@ -18,19 +28,10 @@ class KawanssModel {
   final String userId;
 
   KawanssModel({
-    required this.id,
-    this.accountName,
-    required this.deleted,
-    this.deskripsi,
-    this.gambar,
-    required this.jumlahComment,
-    required this.jumlahLaporan,
-    required this.jumlahLike,
-    this.kawanssPhotoURL,
-    this.lokasi,
-    this.title,
-    required this.uploadDate,
-    required this.userId,
+    required this.id, this.accountName, required this.deleted, this.deskripsi,
+    this.gambar, required this.jumlahComment, required this.jumlahLaporan,
+    required this.jumlahLike, this.kawanssPhotoURL, this.lokasi, this.title,
+    required this.uploadDate, required this.userId,
   });
 
   factory KawanssModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
@@ -47,7 +48,7 @@ class KawanssModel {
       kawanssPhotoURL: data?['kawanssPhotoURL'],
       lokasi: data?['lokasi'],
       title: data?['title'],
-      uploadDate: (data?['uploadDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      uploadDate: _parseSafeTimestamp(data?['uploadDate']) ?? DateTime.now(),
       userId: data?['userId'] ?? '',
     );
   }
@@ -58,14 +59,11 @@ class KawanssModel {
       'deleted': deleted,
       if (deskripsi != null) 'deskripsi': deskripsi,
       if (gambar != null) 'gambar': gambar,
-      'jumlahComment': jumlahComment,
-      'jumlahLaporan': jumlahLaporan,
-      'jumlahLike': jumlahLike,
+      'jumlahComment': jumlahComment, 'jumlahLaporan': jumlahLaporan, 'jumlahLike': jumlahLike,
       if (kawanssPhotoURL != null) 'kawanssPhotoURL': kawanssPhotoURL,
       if (lokasi != null) 'lokasi': lokasi,
       if (title != null) 'title': title,
-      'uploadDate': Timestamp.fromDate(uploadDate),
-      'userId': userId,
+      'uploadDate': Timestamp.fromDate(uploadDate), 'userId': userId,
     };
   }
 }

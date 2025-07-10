@@ -16,6 +16,7 @@ import 'package:admin_dashboard_template/providers/user_provider.dart';
 import 'package:admin_dashboard_template/screens/auth/login_screen.dart';
 import 'package:admin_dashboard_template/screens/auth/register_screen.dart';
 import 'package:admin_dashboard_template/screens/dashboard/dashboard_layout.dart';
+import 'package:admin_dashboard_template/screens/dashboard/report/report_provider.dart';
 import 'package:admin_dashboard_template/screens/unknown_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -76,6 +77,17 @@ class AdminDashboardApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ChatProvider>(
           create: (context) => ChatProvider(
+            firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
+        ChangeNotifierProvider<ChatProvider>(
+          create: (context) => ChatProvider(
+            firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
+        // TAMBAHKAN PROVIDER BARU DI SINI
+        ChangeNotifierProvider<ReportProvider>(
+          create: (context) => ReportProvider(
             firestoreService: context.read<FirestoreService>(),
           ),
         ),

@@ -1,12 +1,14 @@
 import 'package:admin_dashboard_template/core/utils/constants.dart';
 import 'package:admin_dashboard_template/models/banner_model.dart';
 import 'package:admin_dashboard_template/models/infoss_comment_model.dart';
+import 'package:admin_dashboard_template/models/infoss_model.dart';
 import 'package:admin_dashboard_template/models/kawanss_model.dart';
 import 'package:admin_dashboard_template/models/kontributor_model.dart';
 import 'package:admin_dashboard_template/models/news_model.dart';
 import 'package:admin_dashboard_template/models/settings_model.dart';
 import 'package:admin_dashboard_template/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -27,11 +29,9 @@ class FirestoreService {
   Future<UserModel?> getUser(String uid) async {
     final docRef = _db.collection(USERS_COLLECTION).doc(uid);
     final docSnap = await docRef.get();
-
     if (docSnap.exists) {
       return UserModel.fromFirestore(docSnap, null);
     }
-    // Jika dokumen tidak ada, kembalikan null
     return null;
   }
 
@@ -206,7 +206,6 @@ class FirestoreService {
   Future<SettingsModel?> getSettings() async {
     final docRef = _db.collection('settings').doc('appConfig');
     final docSnap = await docRef.get();
-
     if (docSnap.exists) {
       return SettingsModel.fromFirestore(docSnap, null);
     } else {
@@ -219,5 +218,110 @@ class FirestoreService {
         .collection('settings')
         .doc('appConfig')
         .set(settings.toFirestore());
+  }
+  
+  Future<Map<String, dynamic>> getMonthlyStats() async {
+    final now = DateTime.now();
+    final thirtyDaysAgo = now.subtract(const Duration(days: 30));
+    final sixtyDaysAgo = now.subtract(const Duration(days: 60));
+
+    final totalUsers = (await _db.collection(USERS_COLLECTION).count().get()).count ?? 0;
+
+    final allUsersSnapshot = await _db.collection(USERS_COLLECTION).get();
+    
+    int newUsersCount = 0;
+    int previousNewUsersCount = 0;
+
+    for (var doc in allUsersSnapshot.docs) {
+        final user = UserModel.fromFirestore(doc, null);
+        if (user.waktu != null) {
+          if (user.waktu!.isAfter(thirtyDaysAgo)) {
+            newUsersCount++;
+          }
+          if (user.waktu!.isAfter(sixtyDaysAgo) && user.waktu!.isBefore(thirtyDaysAgo)) {
+            previousNewUsersCount++;
+          }
+        }
+    }
+
+    double newUsersChange = 0;
+    if (previousNewUsersCount > 0) {
+      newUsersChange = ((newUsersCount - previousNewUsersCount) / previousNewUsersCount) * 100;
+    } else if (newUsersCount > 0) {
+      newUsersChange = 100.0;
+    }
+
+
+    final newsCount = (await _db.collection(NEWS_COLLECTION).count().get()).count ?? 0;
+    final kawanssCount = (await _db.collection(KAWANSS_COLLECTION).count().get()).count ?? 0;
+    final kontributorCount = (await _db.collection(KONTRIBUTOR_COLLECTION).count().get()).count ?? 0;
+    final totalPosts = newsCount + kawanssCount + kontributorCount;
+
+    int newPosts = 0;
+    final collections = [NEWS_COLLECTION, KAWANSS_COLLECTION, KONTRIBUTOR_COLLECTION];
+    for (var collection in collections) {
+      final snapshot = await _db.collection(collection).get();
+      for(var doc in snapshot.docs) {
+        DateTime? date;
+         if(collection == NEWS_COLLECTION) date = NewsModel.fromFirestore(doc, null).tanggalPosting;
+        if(collection == KAWANSS_COLLECTION) date = KawanssModel.fromFirestore(doc, null).uploadDate;
+        if(collection == KONTRIBUTOR_COLLECTION) date = KontributorModel.fromFirestore(doc, null).uploadDate;
+        if(date != null && date.isAfter(thirtyDaysAgo)) newPosts++;
+      }
+    }
+
+    return {
+      'totalUsers': totalUsers,
+      'newUsers': newUsersCount,
+      'newUsersChange': newUsersChange,
+      'totalPosts': totalPosts,
+      'newPosts': newPosts,
+    };
+  }
+
+  Future<List<InfossModel>> getTopTenPosts() async {
+    final snapshot = await _db
+        .collection(INFOSS_COLLECTION)
+        .orderBy('jumlahView', descending: true)
+        .limit(10)
+        .get();
+    
+    return snapshot.docs
+        .map((doc) => InfossModel.fromFirestore(doc, null))
+        .toList();
+  }
+  
+  Future<List<DateTime>> getTrafficDataInRange(DateTime startTime, DateTime endTime) async {
+    final snapshot = await _db.collection('view_analytics').get();
+
+    final List<DateTime> timestamps = [];
+    for (var doc in snapshot.docs) {
+      try {
+        final tsField = doc.get('timestamp');
+        DateTime? ts;
+
+        if (tsField is Timestamp) {
+            ts = tsField.toDate();
+        } else if (tsField is String) {
+            try {
+                if (tsField.contains('/')) {
+                    ts = DateFormat('MM/dd/yyyy HH:mm').parse(tsField);
+                } else {
+                    ts = DateTime.parse(tsField);
+                }
+            } catch (e) {
+                print('Gagal mem-parsing string tanggal: "$tsField". Error: $e');
+                ts = null;
+            }
+        }
+        
+        if (ts != null && ts.isAfter(startTime) && ts.isBefore(endTime)) {
+          timestamps.add(ts);
+        }
+      } catch (e) {
+        print("Melewatkan dokumen dengan format timestamp tidak valid: ${doc.id}. Error: $e");
+      }
+    }
+    return timestamps;
   }
 }
