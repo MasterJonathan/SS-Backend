@@ -15,13 +15,13 @@ class _CalendarAdminPageState extends State<CalendarAdminPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  Map<DateTime, List<Event>> _events = {}; // Example events
+  Map<DateTime, List<Event>> _events = {}; 
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    // Sample events
+    
     _events = {
       DateTime.now().subtract(const Duration(days: 2)): [Event('Event A'), Event('Event B')],
       DateTime.now(): [Event('Event C')],

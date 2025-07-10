@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LaporanModel {
-  final String id; // Document ID
-  final String postId; // Assuming this is the ID of the reported post (infoss, kawanss, etc.)
+  final String id; 
+  final String postId; 
   final DateTime timestamp;
-  final String userId; // User who made the report
+  final String userId; 
 
   LaporanModel({
     required this.id,

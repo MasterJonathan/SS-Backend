@@ -1,4 +1,4 @@
-// lib/models/settings_model.dart
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -15,7 +15,7 @@ class SettingsModel {
     required this.isChatActive,
   });
 
-  // Factory constructor untuk membuat instance dari data Firestore
+  
   factory SettingsModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
     final data = snapshot.data();
     return SettingsModel(
@@ -26,7 +26,7 @@ class SettingsModel {
     );
   }
 
-  // Method untuk mengubah instance menjadi Map agar bisa disimpan ke Firestore
+  
   Map<String, dynamic> toFirestore() {
     return {
       'audioStreamingUrl': audioStreamingUrl,

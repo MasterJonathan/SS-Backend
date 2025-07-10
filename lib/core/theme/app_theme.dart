@@ -1,4 +1,4 @@
-import 'package:admin_dashboard_template/core/theme/app_colors.dart'; // Make sure this path is correct for your project
+import 'package:admin_dashboard_template/core/theme/app_colors.dart'; 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -36,20 +36,20 @@ class AppTheme {
       ),
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
-        surface: AppColors.surface, // Main background for components like Card
-        onSurface: AppColors.foreground, // Text/icon color on surface
+        surface: AppColors.surface, 
+        onSurface: AppColors.foreground, 
         error: AppColors.error,
-        onPrimary: AppColors.surface, // Text/icon color on primary color
-        // Add other colors if needed: secondary, onSecondary, onError etc.
+        onPrimary: AppColors.surface, 
+        
       ),
       appBarTheme: AppBarTheme(
         backgroundColor:
             AppColors
-                .surface, // Or AppColors.primary if you want a colored AppBar
+                .surface, 
         elevation: 1,
         iconTheme: const IconThemeData(color: AppColors.foreground),
         titleTextStyle: GoogleFonts.plusJakartaSans(
-          // Apply plusJakartaSans here
+          
           color: AppColors.foreground,
           fontSize: 18,
           fontWeight: FontWeight.w600,
@@ -58,28 +58,28 @@ class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        color: AppColors.surface, // Card background
+        color: AppColors.surface, 
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       ),
       dataTableTheme: DataTableThemeData(
         dataTextStyle: GoogleFonts.plusJakartaSans(
           color: AppColors.foreground,
           fontSize: 14,
-        ), // Font for data cells
+        ), 
         dataRowColor: WidgetStateProperty.resolveWith<Color?>((
           Set<WidgetState> states,
         ) {
           if (states.contains(WidgetState.selected)) {
-            // Corrected: Use withOpacity
+            
             return AppColors.primary.withValues(
               alpha: 0.08,
-            ); // Typical selection opacity
+            ); 
           }
           return null;
         }),
         headingRowColor: WidgetStateProperty.all(AppColors.primary),
         headingTextStyle: GoogleFonts.plusJakartaSans(
-          // Apply plusJakartaSans here
+          
           fontWeight: FontWeight.bold,
           color: AppColors.surface,
         ),
@@ -88,10 +88,10 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: GoogleFonts.plusJakartaSans(
           color: AppColors.foreground.withValues(alpha: 0.7),
-        ), // Font for label
+        ), 
         hintStyle: GoogleFonts.plusJakartaSans(
           color: AppColors.foreground.withValues(alpha: 0.5),
-        ), // Font for hint
+        ), 
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(
@@ -114,7 +114,7 @@ class AppTheme {
           textStyle: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            height: 1, // Experiment with this value (e.g., 1.0, 1.1, 1.2)
+            height: 1, 
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
@@ -123,13 +123,13 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
           textStyle: GoogleFonts.plusJakartaSans(
-            // Apply plusJakartaSans here
+            
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
       ),
-      // Consider adding styles for other components like ChipTheme, DialogTheme, etc.
+      
       chipTheme: ChipThemeData(
         labelStyle: GoogleFonts.plusJakartaSans(color: AppColors.foreground),
         backgroundColor: AppColors.primary.withValues(alpha: 0.1),

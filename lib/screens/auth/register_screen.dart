@@ -1,4 +1,4 @@
-// lib/screens/auth/register_screen.dart
+
 
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/providers/authentication_provider.dart';
@@ -32,22 +32,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _nameController.text,
       );
 
-      // --- PERUBAHAN PENTING ADA DI SINI ---
+      
       if (success && mounted) {
-        // Tampilkan pesan sukses dan arahkan ke halaman login
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Registrasi berhasil! Silakan login.'),
             backgroundColor: AppColors.success,
           ),
         );
-        Navigator.of(context).pop(); // Kembali ke halaman login
+        Navigator.of(context).pop(); 
       } else if (!success && mounted) {
         setState(() {
           _errorMessage = 'Registrasi gagal. Email mungkin sudah terdaftar atau password terlalu lemah.';
         });
       }
-      // ------------------------------------
+      
     }
   }
 

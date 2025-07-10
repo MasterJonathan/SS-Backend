@@ -10,7 +10,7 @@ class ProductsPage extends StatelessWidget {
       key: const PageStorageKey('productsPage'),
       child: Center(
         child: Text('Product Management Page', style: Theme.of(context).textTheme.headlineMedium),
-        // Implement DataTable and CRUD for products here
+        
       ),
     );
   }

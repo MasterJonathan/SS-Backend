@@ -14,7 +14,7 @@ class KawanssPage extends StatefulWidget {
 }
 
 class _KawanssPageState extends State<KawanssPage> {
-  // Gunakan _filteredData dari state
+  
   late List<KawanssModel> _filteredData;
   final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd\nHH:mm:ss');
@@ -23,11 +23,11 @@ class _KawanssPageState extends State<KawanssPage> {
   @override
   void initState() {
     super.initState();
-    // Inisialisasi awal _filteredData
+    
     final provider = Provider.of<KawanssProvider>(context, listen: false);
     _filteredData = provider.kawanssList;
 
-    // Listener hanya untuk memicu rebuild saat teks berubah
+    
     _searchController.addListener(() {
       setState(() {});
     });
@@ -39,7 +39,7 @@ class _KawanssPageState extends State<KawanssPage> {
     super.dispose();
   }
 
-  // Metode filter yang aman untuk dipanggil dari build
+  
   void _performFilter(String query, List<KawanssModel> allData) {
     if (query.isEmpty) {
       _filteredData = allData;
@@ -63,9 +63,9 @@ class _KawanssPageState extends State<KawanssPage> {
   Widget build(BuildContext context) {
     return Consumer<KawanssProvider>(
       builder: (context, provider, child) {
-        // --- LOGIKA FILTER YANG BENAR ---
+        
         _performFilter(_searchController.text, provider.kawanssList);
-        // ------------------------------------
+        
 
         return Column(
           key: const PageStorageKey('kawanssPage'),
@@ -115,7 +115,7 @@ class _KawanssPageState extends State<KawanssPage> {
   }
 
   Widget _buildTableControls() {
-    // ... (kode table controls tidak berubah)
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -183,7 +183,7 @@ class _KawanssPageState extends State<KawanssPage> {
       ],
       rows:
           _filteredData.map((item) {
-            // ... (kode DataRow tidak berubah)
+            
             bool isActive = !item.deleted;
             return DataRow(
               cells: [

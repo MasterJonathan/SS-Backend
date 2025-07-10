@@ -1,13 +1,13 @@
-// lib/widgets/dashboard/app_bar_actions.dart
+
 
 import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/providers/authentication_provider.dart'; // DIUBAH: Impor AuthenticationProvider
+import 'package:admin_dashboard_template/providers/authentication_provider.dart'; 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AppBarActions extends StatelessWidget { // DIUBAH: Menjadi StatelessWidget
+class AppBarActions extends StatelessWidget { 
   const AppBarActions({super.key});
 
   @override
@@ -15,7 +15,7 @@ class AppBarActions extends StatelessWidget { // DIUBAH: Menjadi StatelessWidget
     final authProvider = context.watch<AuthenticationProvider>();
     final navigationService = context.read<NavigationService>();
     
-    // Ambil data user dari provider. Bisa null jika belum login.
+    
     final user = authProvider.user;
 
     return Row(
@@ -25,14 +25,14 @@ class AppBarActions extends StatelessWidget { // DIUBAH: Menjadi StatelessWidget
         PopupMenuButton<String>(
           tooltip: "Account",
           offset: const Offset(0, 40),
-          onSelected: (value) async { // Jadikan async untuk logout
+          onSelected: (value) async { 
             if (value == 'profile') {
               navigationService.navigateTo(DashboardPage.profile);
             } else if (value == 'logout') {
-              // DIUBAH: Panggil signOut dari authProvider
+              
               await authProvider.signOut();
-              // Navigasi akan di-handle oleh Consumer di app.dart,
-              // namun untuk memastikan, kita bisa tambahkan navigasi manual.
+              
+              
               if (context.mounted) {
                  Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
               }
@@ -64,7 +64,7 @@ class AppBarActions extends StatelessWidget { // DIUBAH: Menjadi StatelessWidget
           child: CircleAvatar(
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.surface,
-            // DIUBAH: Tampilkan inisial nama atau email dari user model
+            
             child: Text(
               user?.nama.isNotEmpty == true
                   ? user!.nama[0].toUpperCase()
@@ -118,7 +118,7 @@ class __NotificationBellState extends State<_NotificationBell> {
           borderRadius: BorderRadius.circular(8),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.surface, // Menggunakan warna dari AppColors
+              color: AppColors.surface, 
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
@@ -206,7 +206,7 @@ class __NotificationBellState extends State<_NotificationBell> {
               child: Text(
                 _notifications.length.toString(),
                 style: const TextStyle(
-                  color: Colors.white, // Teks notifikasi tetap putih
+                  color: Colors.white, 
                   fontSize: 8,
                 ),
                 textAlign: TextAlign.center,

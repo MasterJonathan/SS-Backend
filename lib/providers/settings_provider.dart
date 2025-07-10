@@ -1,7 +1,7 @@
-// lib/providers/settings_provider.dart
+
 
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
-import 'package:admin_dashboard_template/models/settings_model.dart'; // Anda perlu membuat model ini
+import 'package:admin_dashboard_template/models/settings_model.dart'; 
 import 'package:flutter/material.dart';
 
 enum SettingsViewState { Idle, Busy }
@@ -25,7 +25,7 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> fetchSettings() async {
     _setState(SettingsViewState.Busy);
     try {
-      // Anda perlu menambahkan 'getSettings' di FirestoreService
+      
       _settings = await _firestoreService.getSettings();
       _setState(SettingsViewState.Idle);
     } catch (e) {
@@ -37,9 +37,9 @@ class SettingsProvider extends ChangeNotifier {
   Future<bool> updateSettings(SettingsModel newSettings) async {
     _setState(SettingsViewState.Busy);
     try {
-      // Anda perlu menambahkan 'updateSettings' di FirestoreService
+      
       await _firestoreService.updateSettings(newSettings);
-      // Setelah berhasil update, fetch lagi data terbaru
+      
       await fetchSettings();
       _setState(SettingsViewState.Idle);
       return true;

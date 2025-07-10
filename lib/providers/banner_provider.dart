@@ -1,4 +1,4 @@
-// lib/providers/banner_provider.dart
+
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
@@ -25,7 +25,7 @@ class BannerProvider extends ChangeNotifier {
   }
 
   void _listenToBanners() {
-    // Anda perlu menambahkan 'getBannersStream' di FirestoreService
+    
     _streamSubscription = _firestoreService.getBannersStream().listen((data) {
       _banners = data;
       _setState(BannerViewState.Idle);
@@ -38,7 +38,7 @@ class BannerProvider extends ChangeNotifier {
   Future<bool> addBanner(BannerTopModel banner) async {
     _setState(BannerViewState.Busy);
     try {
-      // Anda perlu menambahkan 'addBanner' di FirestoreService
+      
       await _firestoreService.addBanner(banner);
       _setState(BannerViewState.Idle);
       return true;
@@ -52,7 +52,7 @@ class BannerProvider extends ChangeNotifier {
   Future<bool> updateBanner(BannerTopModel banner) async {
     _setState(BannerViewState.Busy);
     try {
-      // Anda perlu menambahkan 'updateBanner' di FirestoreService
+      
       await _firestoreService.updateBanner(banner);
       _setState(BannerViewState.Idle);
       return true;
@@ -66,7 +66,7 @@ class BannerProvider extends ChangeNotifier {
   Future<bool> deleteBanner(String bannerId) async {
     _setState(BannerViewState.Busy);
     try {
-      // Anda perlu menambahkan 'deleteBanner' di FirestoreService
+      
       await _firestoreService.deleteBanner(bannerId);
       _setState(BannerViewState.Idle);
       return true;

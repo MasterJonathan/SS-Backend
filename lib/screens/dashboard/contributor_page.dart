@@ -23,7 +23,7 @@ class ContributorPage extends StatelessWidget {
     );
   }
 
-  // Layout untuk layar lebar
+  
   Widget _buildWideLayout() {
     return Padding(
       padding: const EdgeInsets.all(0),
@@ -51,7 +51,7 @@ class ContributorPage extends StatelessWidget {
     );
   }
 
-  // Layout untuk layar sempit
+  
   Widget _buildNarrowLayout() {
     return SingleChildScrollView(
       child: Padding(

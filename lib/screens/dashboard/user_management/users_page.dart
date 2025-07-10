@@ -1,4 +1,4 @@
-// lib/screens/dashboard/users_page.dart
+
 
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/user_model.dart';
@@ -33,7 +33,7 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
     super.dispose();
   }
 
-  // Dialog tidak banyak berubah, hanya memastikan field 'isActive' ditangani saat update
+  
   void _showAddEditDialog({UserModel? user}) {
     final isEditing = user != null;
     final formKey = GlobalKey<FormState>();
@@ -73,13 +73,13 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                 if (formKey.currentState!.validate()) {
                   final provider = context.read<UserProvider>();
                   if (isEditing) {
-                    // Membuat salinan user yang ada dengan data baru
+                    
                     final Map<String, dynamic> updatedData = {
                       'nama': nameController.text,
                       'role': selectedRole,
                     };
 
-                    // Panggil metode update parsial (akan kita buat di provider & service)
+                    
                     await provider.updateUserPartial(user.id, updatedData);
 
                   } else {
@@ -147,8 +147,8 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                           DataColumn(label: Text('Nama')),
                           DataColumn(label: Text('Email')),
                           DataColumn(label: Text('Role')),
-                          DataColumn(label: Text('Tgl Registrasi')), // ✨ KOLOM BARU
-                          DataColumn(label: Text('Status')),       // ✨ KOLOM BARU
+                          DataColumn(label: Text('Tgl Registrasi')), 
+                          DataColumn(label: Text('Status')),       
                           DataColumn(label: Text('Aksi')),
                         ],
                         rows: filteredData.map((user) {
@@ -164,16 +164,16 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                 ),
                               ),
-                              // ✨ DATA CELL BARU
+                              
                               DataCell(Text(user.waktu != null ? _dateFormatter.format(user.waktu!) : '-')),
-                              DataCell(
-                                Chip(
-                                  label: Text(user.isActive ? 'Active' : 'Inactive'),
-                                  backgroundColor: user.isActive ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
-                                  labelStyle: TextStyle(color: user.isActive ? AppColors.success : AppColors.error),
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                ),
-                              ),
+                              // DataCell(
+                              //   Chip(
+                              //     label: Text(user.isActive ? 'Active' : 'Inactive'),
+                              //     backgroundColor: user.isActive ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
+                              //     labelStyle: TextStyle(color: user.isActive ? AppColors.success : AppColors.error),
+                              //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              //   ),
+                              // ),
                               DataCell(
                                 Row(
                                   children: [
@@ -182,21 +182,21 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                                       tooltip: 'Edit User',
                                       onPressed: () => _showAddEditDialog(user: user),
                                     ),
-                                    // ✨ TOMBOL DISABLE/ENABLE BARU
-                                    IconButton(
-                                      icon: Icon(
-                                        user.isActive ? Icons.block : Icons.power_settings_new,
-                                        color: user.isActive ? AppColors.error : AppColors.success,
-                                      ),
-                                      tooltip: user.isActive ? 'Nonaktifkan User' : 'Aktifkan User',
-                                      onPressed: () async {
-                                        final newStatus = !user.isActive;
-                                        await context.read<UserProvider>().updateUserPartial(
-                                          user.id,
-                                          {'isActive': newStatus},
-                                        );
-                                      },
-                                    ),
+                                    
+                                    // IconButton(
+                                    //   icon: Icon(
+                                    //     user.isActive ? Icons.block : Icons.power_settings_new,
+                                    //     color: user.isActive ? AppColors.error : AppColors.success,
+                                    //   ),
+                                    //   tooltip: user.isActive ? 'Nonaktifkan User' : 'Aktifkan User',
+                                    //   onPressed: () async {
+                                    //     final newStatus = !user.isActive;
+                                    //     await context.read<UserProvider>().updateUserPartial(
+                                    //       user.id,
+                                    //       {'isActive': newStatus},
+                                    //     );
+                                    //   },
+                                    // ),
                                   ],
                                 ),
                               ),

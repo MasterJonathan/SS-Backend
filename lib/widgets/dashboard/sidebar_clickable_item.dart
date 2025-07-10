@@ -1,8 +1,8 @@
-import 'package:admin_dashboard_template/core/theme/app_colors.dart'; // Adjust if needed
+import 'package:admin_dashboard_template/core/theme/app_colors.dart'; 
 import 'package:flutter/material.dart';
 
 class SidebarClickableItem extends StatefulWidget {
-  // Changed from _SidebarClickableItem
+  
   final IconData icon;
   final String title;
   final bool isSelected;
@@ -11,8 +11,8 @@ class SidebarClickableItem extends StatefulWidget {
   final Color sidebarBackgroundColor;
 
   const SidebarClickableItem({
-    // Changed from _SidebarClickableItem
-    super.key, // Added super.key for consistency if not present
+    
+    super.key, 
     required this.icon,
     required this.title,
     required this.isSelected,
@@ -22,11 +22,11 @@ class SidebarClickableItem extends StatefulWidget {
   });
 
   @override
-  State<SidebarClickableItem> createState() => _SidebarClickableItemState(); // Changed from _SidebarClickableItemState
+  State<SidebarClickableItem> createState() => _SidebarClickableItemState(); 
 }
 
 class _SidebarClickableItemState extends State<SidebarClickableItem> {
-  // Changed from _SidebarClickableItem
+  
   bool _isHovered = false;
 
   @override
@@ -38,7 +38,7 @@ class _SidebarClickableItemState extends State<SidebarClickableItem> {
       itemBackgroundColor = AppColors.primary;
       itemForegroundColor = AppColors.surface;
 
-      // Not Selected
+      
     } else {
       itemBackgroundColor = _isHovered ? AppColors.primary : AppColors.surface;
 
@@ -66,7 +66,7 @@ class _SidebarClickableItemState extends State<SidebarClickableItem> {
         hoverColor: Colors.transparent,
         child: Padding(
           padding: EdgeInsets.only(
-            left: 16.0, // This was your last specified padding
+            left: 16.0, 
             top: 12,
             bottom: 12,
             right: 16,

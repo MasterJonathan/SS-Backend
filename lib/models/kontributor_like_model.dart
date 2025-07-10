@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class KontributorLikeModel {
-  final String id; // Document ID
-  final String kontributorUid; // Field name is 'kontributorUid'
+  final String id; 
+  final String kontributorUid; 
   final DateTime timestamp;
   final String userId;
 

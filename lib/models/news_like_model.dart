@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewsLikeModel {
-  final String id; // Document ID
+  final String id; 
   final String newsId;
   final DateTime timestamp;
   final String userId;

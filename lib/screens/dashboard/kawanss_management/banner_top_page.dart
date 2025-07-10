@@ -106,10 +106,10 @@ class _BannerTopPageState extends State<BannerTopPage> {
       builder: (context, provider, child) {
         _performFilter(_searchController.text, provider.banners);
 
-        // --- PERUBAHAN UTAMA ADA DI SINI ---
-        // Widget root sekarang adalah Column, bukan SingleChildScrollView.
-        // crossAxisAlignment: CrossAxisAlignment.start akan membuat kontennya
-        // rata kiri dan berada di atas secara default.
+        
+        
+        
+        
         return Column(
           key: const PageStorageKey('bannerTopPage'),
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +140,7 @@ class _BannerTopPageState extends State<BannerTopPage> {
             ),
           ],
         );
-        // ------------------------------------
+        
       },
     );
   }

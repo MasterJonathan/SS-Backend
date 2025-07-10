@@ -6,7 +6,7 @@ class CustomCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final Color? color;
-  // final double? elevation; // We'll remove this or ignore it if we use custom shadow
+  
 
   const CustomCard({
     super.key,
@@ -14,19 +14,19 @@ class CustomCard extends StatelessWidget {
     this.padding,
     this.margin,
     this.color,
-    // this.elevation,
+    
   });
 
   @override
   Widget build(BuildContext context) {
-    // Get card theme defaults, but we will override shadow
+    
     final cardTheme = Theme.of(context).cardTheme;
 
     return Container(
       margin: margin ?? cardTheme.margin ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       decoration: BoxDecoration(
         color: color ?? cardTheme.color ?? Theme.of(context).colorScheme.surface,
-        borderRadius: (cardTheme.shape as RoundedRectangleBorder?)?.borderRadius ?? BorderRadius.circular(12), // Get border radius from theme or default
+        borderRadius: (cardTheme.shape as RoundedRectangleBorder?)?.borderRadius ?? BorderRadius.circular(12), 
         boxShadow: [
           BoxShadow(
 
@@ -37,7 +37,7 @@ class CustomCard extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect( // Important to clip child to the rounded corners if the child might overflow
+      child: ClipRRect( 
          borderRadius: (cardTheme.shape as RoundedRectangleBorder?)?.borderRadius ?? BorderRadius.circular(12),
         child: Padding(
           padding: padding ?? const EdgeInsets.all(16.0),

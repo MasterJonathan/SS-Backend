@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "934435131428",
-    "project_id": "kpss-duplicate",
-    "storage_bucket": "kpss-duplicate.firebasestorage.app"
+    "project_number": "105695732948",
+    "project_id": "ss-sna",
+    "storage_bucket": "ss-sna.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:934435131428:android:359e87fd54587d144e08b1",
+        "mobilesdk_app_id": "1:105695732948:android:3ee21d5963113e206dc741",
         "android_client_info": {
           "package_name": "com.example.admin_dashboard_template"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBS9-HV95JJIUVF6tUY-zX75VyTWIc6iJ0"
+          "current_key": "AIzaSyCrfF1Dpc-0r1NlHjJ1kS7PZzWhOGDVwAU"
         }
       ],
       "services": {
