@@ -1,11 +1,6 @@
-// lib/screens/dashboard/report/report_page.dart
-
+// masterjonathan/ss-backend/SS-Backend-862a36bb5291b47a3c80564dd9a82260ee2f4d17/lib/screens/dashboard/report/report_page.dart
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/infoss_model.dart';
-import 'package:admin_dashboard_template/models/kawanss_model.dart';
-import 'package:admin_dashboard_template/models/kontributor_model.dart';
-import 'package:admin_dashboard_template/models/news_model.dart';
-import 'package:admin_dashboard_template/models/user_model.dart';
 import 'package:admin_dashboard_template/screens/dashboard/report/report_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -30,7 +25,6 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    // Memanggil fungsi init dari provider saat halaman pertama kali dibuat
     _initFuture = Provider.of<ReportProvider>(context, listen: false).init();
 
     _animationController = AnimationController(
@@ -57,7 +51,6 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     return FutureBuilder(
       future: _initFuture,
       builder: (context, snapshot) {
-        // Saat proses inisialisasi berjalan, tampilkan loading
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: Column(
@@ -71,14 +64,12 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
           );
         }
 
-        // Jika terjadi error saat inisialisasi, tampilkan pesan error
         if (snapshot.hasError) {
           return Center(
             child: Text("Terjadi kesalahan saat inisialisasi: ${snapshot.error}"),
           );
         }
 
-        // Jika sudah selesai, tampilkan halaman
         _animationController.forward();
         return Consumer<ReportProvider>(
           builder: (context, reportProvider, child) {
@@ -86,12 +77,12 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
               opacity: _fadeAnimation,
               child: ListView(
                 key: const PageStorageKey('reportPage'),
-                padding: const EdgeInsets.all(0),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                 children: [
                   _buildHeader(Theme.of(context).textTheme),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                   _buildStatsGrid(reportProvider),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -106,15 +97,9 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                   _buildTrafficChartCard(Theme.of(context).textTheme, reportProvider),
-                  const SizedBox(height: 32),
-                  
-                  // KEDUA BAGIAN TABEL DI BAWAH INI SUDAH DIHAPUS
-                  // _buildAllPostsTable(Theme.of(context).textTheme, reportProvider),
-                  // const SizedBox(height: 32),
-                  // _buildAllUsersTable(Theme.of(context).textTheme, reportProvider),
-                  // const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                 ],
               ),
             );
@@ -128,14 +113,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withOpacity(0.1),
-            AppColors.primary.withOpacity(0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.primary.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.1)),
       ),
@@ -144,34 +122,36 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
+            child: const Icon(
               Icons.analytics_rounded,
-              color: AppColors.primary,
+              color: Colors.white,
               size: 32,
             ),
           ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Laporan & Analitik',
-                style: textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Laporan & Analitik',
+                  style: textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Pantau performa dan statistik platform Anda',
-                style: textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey.shade600,
+                const SizedBox(height: 4),
+                Text(
+                  'Pantau performa dan statistik platform Anda secara komprehensif.',
+                  style: textTheme.titleMedium?.copyWith(
+                    color: Colors.grey.shade600,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -203,16 +183,16 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-        childAspectRatio: 1.4,
+        crossAxisSpacing: 24,
+        mainAxisSpacing: 24,
+        childAspectRatio: 1.5,
       ),
       itemCount: statsData.length,
       itemBuilder: (context, index) {
         final data = statsData[index];
         return TweenAnimationBuilder<double>(
           tween: Tween(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 800 + (index * 200)),
+          duration: Duration(milliseconds: 600 + (index * 150)),
           curve: Curves.elasticOut,
           builder: (context, value, child) {
             return Transform.scale(
@@ -235,24 +215,26 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: AppColors.primary, size: 24),
+                child: Icon(icon, color: AppColors.primary, size: 28),
               ),
               if(change != null)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: change >= 0 ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -276,23 +258,29 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
                 ),
             ],
           ),
-          const Spacer(),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ],
       ),
@@ -332,93 +320,90 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade200),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: DataTable(
-                headingRowColor: MaterialStateProperty.all(
-                  Colors.grey.shade50,
-                ),
-                headingTextStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                dataRowMaxHeight: 60,
-                columns: const [
-                  DataColumn(label: Text('Ranking')),
-                  DataColumn(label: Text('Judul Postingan')),
-                  DataColumn(label: Text('Views'), numeric: true),
-                ],
-                rows: provider.topPosts.asMap().entries.map((entry) {
-                  int index = entry.key;
-                  InfossModel post = entry.value;
-                  return DataRow(
-                    color: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.hovered)) {
-                          return AppColors.primary.withOpacity(0.05);
-                        }
-                        return null;
-                      },
-                    ),
-                    cells: [
-                      DataCell(
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: _getRankColor(index),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '${index + 1}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      DataCell(
-                        SizedBox(
-                          width: 300,
-                          child: Text(
-                            post.judul,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                      DataCell(
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            NumberFormat.decimalPattern('id_ID')
-                                .format(post.jumlahView),
-                            style: TextStyle(
-                              color: Colors.blue.shade700,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: DataTable(
+              headingRowColor: MaterialStateProperty.all(
+                Colors.grey.shade50,
               ),
+              headingTextStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                fontSize: 14,
+              ),
+              dataRowMaxHeight: 60,
+              columnSpacing: 16,
+              columns: const [
+                DataColumn(label: Text('#')),
+                DataColumn(label: Expanded(child: Text('Judul Postingan'))),
+                DataColumn(label: Text('Views'), numeric: true),
+              ],
+              rows: provider.topPosts.asMap().entries.map((entry) {
+                int index = entry.key;
+                InfossModel post = entry.value;
+                return DataRow(
+                  color: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.hovered)) {
+                        return AppColors.primary.withOpacity(0.05);
+                      }
+                      return null;
+                    },
+                  ),
+                  cells: [
+                    DataCell(
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: _getRankColor(index),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${index + 1}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SizedBox(
+                        width: 250,
+                        child: Text(
+                          post.judul,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          NumberFormat.compact().format(post.jumlahView),
+                          style: TextStyle(
+                            color: Colors.blue.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -428,11 +413,11 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
 
   Color _getRankColor(int index) {
      switch (index) {
-      case 0: return const Color(0xFFFFD700);
-      case 1: return const Color(0xFFC0C0C0);
-      case 2: return const Color(0xFFCD7F32);
-      default: return Colors.grey.shade600;
-    }
+       case 0: return const Color(0xFFFFC107); // Gold
+       case 1: return const Color(0xFFC0C0C0); // Silver
+       case 2: return const Color(0xFFCD7F32); // Bronze
+       default: return Colors.grey.shade400;
+     }
   }
 
   Widget _buildAnalyticsCard(TextTheme textTheme, ReportProvider provider) {
@@ -483,7 +468,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
   }
 
   Widget _buildSheetsActionButton(BuildContext context) {
-    final provider = context.read<ReportProvider>();
+    final provider = context.watch<ReportProvider>();
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc';
 
     return PopupMenuButton<String>(
@@ -548,14 +533,16 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
   }
 
   void _launchURL(String url) async {
-      final uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tidak bisa membuka $url')),
-        );
-      }
+     final uri = Uri.parse(url);
+     if (await canLaunchUrl(uri)) {
+       await launchUrl(uri);
+     } else {
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(content: Text('Tidak bisa membuka $url')),
+         );
+       }
+     }
   }
 
   Widget _buildActionButton({required IconData icon, required String label, required List<Color> colors, VoidCallback? onPressed}) {
@@ -611,28 +598,57 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.bar_chart_rounded,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.bar_chart_rounded,
-                      color: Colors.blue,
-                      size: 20,
+                    Text(
+                      provider.trafficChartTitle,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    provider.trafficChartTitle,
-                    style: textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<TrafficType>(
+                          value: provider.selectedTrafficType,
+                          items: const [
+                            DropdownMenuItem(value: TrafficType.AllViews, child: Text("Semua Kunjungan")),
+                            DropdownMenuItem(value: TrafficType.Posts, child: Text("Postingan")),
+                            DropdownMenuItem(value: TrafficType.NewUsers, child: Text("Pengguna Baru")),
+                          ],
+                          onChanged: provider.isTrafficLoading ? null : (type) {
+                            if (type != null) {
+                              provider.fetchTrafficReport(provider.selectedTimeRange, type: type);
+                            }
+                          },
+                          style: textTheme.bodyMedium,
+                          focusColor: Colors.transparent,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               _buildTimeRangeChips(provider),
             ],
@@ -641,7 +657,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
           Container(
             height: 320,
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(12),
             ),
             child: provider.isTrafficLoading
@@ -652,7 +668,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.bar_chart_rounded,
+                              Icons.data_usage_rounded,
                               size: 48,
                               color: Colors.grey.shade400,
                             ),
@@ -667,7 +683,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
                         ),
                       )
                     : Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.only(top: 16),
                         child: _buildBarChart(provider),
                       ),
           ),
@@ -697,9 +713,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
                     provider.fetchTrafficReport(range);
                   }
                 },
-          backgroundColor: isSelected
-              ? AppColors.primary
-              : Colors.grey.shade200,
+          backgroundColor: Colors.grey.shade200,
           selectedColor: AppColors.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -707,13 +721,14 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
               color: isSelected ? AppColors.primary : Colors.grey.shade300,
             ),
           ),
+          showCheckmark: false,
         );
       }).toList(),
     );
   }
 
   Widget _buildBarChart(ReportProvider provider) {
-     double maxY = 0;
+    double maxY = 0;
     if (provider.trafficData.isNotEmpty) {
       maxY = provider.trafficData.reduce((a, b) => a > b ? a : b) * 1.2;
     }
@@ -725,8 +740,19 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
         barTouchData: BarTouchData(
           touchTooltipData: BarTouchTooltipData(
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              String tooltipText;
+              switch(provider.selectedTrafficType) {
+                case TrafficType.NewUsers:
+                  tooltipText = '${rod.toY.toInt()} pengguna baru';
+                  break;
+                case TrafficType.Posts:
+                  tooltipText = '${rod.toY.toInt()} postingan baru';
+                  break;
+                default:
+                  tooltipText = '${rod.toY.toInt()} kunjungan';
+              }
               return BarTooltipItem(
-                '${rod.toY.toInt()} views',
+                tooltipText,
                 const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -775,7 +801,14 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
             sideTitles: SideTitles(showTitles: false),
           ),
         ),
-        gridData: const FlGridData(show: false),
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          getDrawingHorizontalLine: (value) => FlLine(
+            color: Colors.grey.shade200,
+            strokeWidth: 1,
+          ),
+        ),
         borderData: FlBorderData(show: false),
         barGroups: provider.trafficData.asMap().entries.map((e) {
           return BarChartGroupData(

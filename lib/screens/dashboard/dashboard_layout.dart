@@ -1,7 +1,7 @@
 import 'package:admin_dashboard_template/screens/dashboard/berita/berita_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/chat_management_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/infoss_management/banner_top_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/infoss_management/infoss_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/infoss/banner_top_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/infoss/infoss_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kategori_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kawanss/kawanss_management_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kawanss/kawanss_post_page.dart';

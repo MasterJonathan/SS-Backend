@@ -1,5 +1,3 @@
-// lib/screens/dashboard/report/report_provider.dart
-
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
 import 'package:admin_dashboard_template/core/services/sheets_service.dart';
 import 'package:admin_dashboard_template/models/infoss_model.dart';
@@ -11,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 enum TrafficTimeRange { Harian, Mingguan, Bulanan, Tahunan }
+enum TrafficType { AllViews, Posts, NewUsers }
 
 class ReportProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
@@ -32,6 +31,7 @@ class ReportProvider extends ChangeNotifier {
   bool _isTrafficLoading = false;
   String? _trafficErrorMessage;
   TrafficTimeRange _selectedTimeRange = TrafficTimeRange.Harian;
+  TrafficType _selectedTrafficType = TrafficType.AllViews;
   List<double> _trafficData = [];
   List<String> _trafficLabels = [];
   String _trafficChartTitle = "Rata-rata Traffic 24 Jam Terakhir";
@@ -54,6 +54,7 @@ class ReportProvider extends ChangeNotifier {
   bool get isTrafficLoading => _isTrafficLoading;
   String? get trafficErrorMessage => _trafficErrorMessage;
   TrafficTimeRange get selectedTimeRange => _selectedTimeRange;
+  TrafficType get selectedTrafficType => _selectedTrafficType;
   List<double> get trafficData => _trafficData;
   List<String> get trafficLabels => _trafficLabels;
   String get trafficChartTitle => _trafficChartTitle;
@@ -66,14 +67,11 @@ class ReportProvider extends ChangeNotifier {
   ReportProvider({required FirestoreService firestoreService})
       : _firestoreService = firestoreService;
 
-  // FUNGSI INIT BARU YANG AKAN DIPANGGIL DARI UI
   Future<void> init() async {
-    // Hanya jalankan jika belum siap
     if (_isReady) return;
 
     _sheetsService = await SheetsService.initialize();
     
-    // Tunggu semua data selesai diambil
     await Future.wait([
       fetchGeneralReports(),
       fetchTableData(),
@@ -83,7 +81,6 @@ class ReportProvider extends ChangeNotifier {
     _isReady = true;
     notifyListeners();
   }
-
 
   Future<void> fetchGeneralReports() async {
     _isStatsLoading = true;
@@ -140,41 +137,61 @@ class ReportProvider extends ChangeNotifier {
     }
   }
 
-
-  Future<void> fetchTrafficReport(TrafficTimeRange range) async {
+  Future<void> fetchTrafficReport(TrafficTimeRange range, {TrafficType? type}) async {
     _isTrafficLoading = true;
     _selectedTimeRange = range;
+    if (type != null) {
+      _selectedTrafficType = type;
+    }
     notifyListeners();
+
     try {
       final now = DateTime.now();
       DateTime startTime;
-      String newTitle = "";
-
+      
       switch (range) {
         case TrafficTimeRange.Harian:
           startTime = now.subtract(const Duration(hours: 24));
-          newTitle = "Traffic 24 Jam Terakhir (per Jam)";
           break;
         case TrafficTimeRange.Mingguan:
           startTime = now.subtract(const Duration(days: 7));
-          newTitle = "Traffic 7 Hari Terakhir (per Hari)";
           break;
         case TrafficTimeRange.Bulanan:
           startTime = DateTime(now.year, now.month, 1);
-          newTitle = "Traffic Bulan Ini (per Hari)";
           break;
         case TrafficTimeRange.Tahunan:
           startTime = DateTime(now.year, 1, 1);
-          newTitle = "Traffic Tahun Ini (per Bulan)";
           break;
       }
 
-      final rawData = await _firestoreService.getTrafficDataInRange(startTime, now);
+      List<DateTime> rawData;
+      String titleSegment = "";
+      
+      switch (_selectedTrafficType) {
+        case TrafficType.Posts:
+          rawData = await _firestoreService.getPostsTraffic(startTime, now);
+          titleSegment = "Postingan Baru";
+          break;
+        case TrafficType.NewUsers:
+          rawData = await _firestoreService.getNewUsersTraffic(startTime, now);
+          titleSegment = "Pengguna Baru";
+          break;
+        case TrafficType.AllViews:
+        default:
+          rawData = await _firestoreService.getTrafficDataInRange(startTime, now);
+          titleSegment = "Semua Kunjungan";
+          break;
+      }
+      
       _processTrafficData(rawData, range);
-      _trafficChartTitle = newTitle;
+      
+      String rangeName = toBeginningOfSentenceCase(range.name.toLowerCase()) ?? range.name;
+      _trafficChartTitle = "Traffic $titleSegment - $rangeName";
 
     } catch (e) {
       _trafficErrorMessage = "Gagal memuat data traffic: $e";
+      _trafficData = [];
+      _trafficLabels = [];
     } finally {
       _isTrafficLoading = false;
       notifyListeners();
@@ -192,7 +209,7 @@ class ReportProvider extends ChangeNotifier {
       case TrafficTimeRange.Harian:
         for (var t in timestamps) counts.update(t.hour, (v) => v + 1, ifAbsent: () => 1);
         _trafficData = List.generate(24, (i) => (counts[i] ?? 0).toDouble());
-        _trafficLabels = List.generate(24, (i) => i.toString());
+        _trafficLabels = List.generate(24, (i) => i.toString().padLeft(2, '0'));
         break;
       case TrafficTimeRange.Mingguan:
         final now = DateTime.now();
@@ -201,7 +218,7 @@ class ReportProvider extends ChangeNotifier {
           if (dayIndex >= 0 && dayIndex < 7) counts.update(dayIndex, (v) => v + 1, ifAbsent: () => 1);
         }
         _trafficData = List.generate(7, (i) => (counts[i] ?? 0).toDouble());
-        _trafficLabels = List.generate(7, (i) => DateFormat('E').format(now.subtract(Duration(days: 6 - i))));
+        _trafficLabels = List.generate(7, (i) => DateFormat('E', 'id_ID').format(now.subtract(Duration(days: 6 - i))));
         break;
       case TrafficTimeRange.Bulanan:
         final daysInMonth = DateTime(DateTime.now().year, DateTime.now().month + 1, 0).day;
@@ -212,21 +229,18 @@ class ReportProvider extends ChangeNotifier {
       case TrafficTimeRange.Tahunan:
         for (var t in timestamps) counts.update(t.month, (v) => v + 1, ifAbsent: () => 1);
         _trafficData = List.generate(12, (i) => (counts[i + 1] ?? 0).toDouble());
-        _trafficLabels = List.generate(12, (i) => DateFormat('MMM').format(DateTime(0, i + 1)));
+        _trafficLabels = List.generate(12, (i) => DateFormat('MMM', 'id_ID').format(DateTime(0, i + 1)));
         break;
     }
   }
 
-
   Future<bool> exportPostsToSheet() async {
     if (!_isReady) {
       _exportPostsMessage = "Gagal: Layanan Google Sheets belum siap. Coba lagi sesaat.";
-      print(_exportPostsMessage);
       notifyListeners();
       return false;
     }
 
-    print("--- Memulai Proses Ekspor Postingan ---");
     _isExportingPosts = true;
     _exportPostsMessage = "Memulai ekspor...";
     notifyListeners();
@@ -234,33 +248,26 @@ class ReportProvider extends ChangeNotifier {
     try {
       if (_allPosts.isEmpty) {
         _exportPostsMessage = "Gagal: Tidak ada data postingan untuk diekspor.";
-        print(_exportPostsMessage);
         _isExportingPosts = false;
         notifyListeners();
         return false;
       }
-      print("Data ditemukan: ${_allPosts.length} postingan akan diekspor.");
 
       const spreadsheetId = '1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc';
       const worksheetTitle = 'Post';
 
-      print("Mencari worksheet '$worksheetTitle'...");
       final worksheet = await _sheetsService.getWorksheet(spreadsheetId, worksheetTitle);
       if (worksheet == null) {
           _exportPostsMessage = "Gagal: Worksheet '$worksheetTitle' tidak ditemukan atau tidak bisa dibuat.";
-          print(_exportPostsMessage);
           _isExportingPosts = false;
           notifyListeners();
           return false;
       }
-      print("Worksheet ditemukan. Membersihkan data lama...");
       
       await _sheetsService.clearWorksheet(worksheet);
-      print("Data lama dibersihkan. Menambahkan header...");
 
       final headers = ['Judul', 'Tipe', 'Tanggal Posting', 'Oleh', 'Dilihat', 'Likes', 'Comments'];
       await _sheetsService.insertRow(worksheet, 1, headers);
-      print("Header berhasil ditambahkan. Memproses data baris...");
 
       List<List<dynamic>> rows = [];
       for (var post in _allPosts) {
@@ -273,8 +280,8 @@ class ReportProvider extends ChangeNotifier {
         int comments = 0;
 
         if (post is NewsModel) {
-            title = post.title; type = 'Berita Web'; date = post.uploadDate!.toIso8601String();
-            author = post.pengirim!; views = post.jumlahView; likes = post.jumlahLike; comments = 0;
+            title = post.title!; type = 'Berita Web'; date = post.uploadDate!.toIso8601String();
+            author = post.pengirim!; views = post.jumlahView!; likes = post.jumlahLike!; comments = 0;
         } else if (post is KawanssModel) {
             title = post.title ?? 'Tanpa Judul'; type = 'Kawan SS'; date = post.uploadDate.toIso8601String();
             author = post.accountName ?? 'Anonim'; views = post.jumlahLaporan; likes = post.jumlahLike; comments = post.jumlahComment;
@@ -285,16 +292,13 @@ class ReportProvider extends ChangeNotifier {
         rows.add([title, type, date, author, views, likes, comments]);
       }
       
-      print("Data baris selesai diproses. Mengirim ${rows.length} baris ke Google Sheets...");
       await _sheetsService.appendRows(worksheet, rows);
       
       _exportPostsMessage = "Berhasil mengekspor ${rows.length} data postingan!";
-      print("--- Ekspor Postingan Selesai ---");
       return true;
 
     } catch (e) {
       _exportPostsMessage = "Terjadi kesalahan fatal saat ekspor: $e";
-      print(_exportPostsMessage);
       return false;
     } finally {
       _isExportingPosts = false;
@@ -305,12 +309,10 @@ class ReportProvider extends ChangeNotifier {
   Future<bool> exportUsersToSheet() async {
      if (!_isReady) {
       _exportUsersMessage = "Gagal: Layanan Google Sheets belum siap. Coba lagi sesaat.";
-      print(_exportUsersMessage);
       notifyListeners();
       return false;
     }
 
-    print("--- Memulai Proses Ekspor Pengguna ---");
     _isExportingUsers = true;
     _exportUsersMessage = "Memulai ekspor...";
     notifyListeners();
@@ -318,47 +320,39 @@ class ReportProvider extends ChangeNotifier {
     try {
         if (_allUsers.isEmpty) {
           _exportUsersMessage = "Gagal: Tidak ada data pengguna untuk diekspor.";
-          print(_exportUsersMessage);
           _isExportingUsers = false;
           notifyListeners();
           return false;
         }
-        print("Data ditemukan: ${_allUsers.length} pengguna akan diekspor.");
 
         const spreadsheetId = '1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc';
         const worksheetTitle = 'Users';
 
-        print("Mencari worksheet '$worksheetTitle'...");
         final worksheet = await _sheetsService.getWorksheet(spreadsheetId, worksheetTitle);
         if (worksheet == null) {
           _exportUsersMessage = "Gagal: Worksheet '$worksheetTitle' tidak ditemukan atau tidak bisa dibuat.";
-          print(_exportUsersMessage);
           _isExportingUsers = false;
           notifyListeners();
           return false;
         }
-        print("Worksheet ditemukan. Membersihkan data lama...");
         
         await _sheetsService.clearWorksheet(worksheet);
-        print("Data lama dibersihkan. Menambahkan header...");
 
         final headers = ['Nama', 'Email', 'Role', 'Tanggal Bergabung', 'Status'];
         await _sheetsService.insertRow(worksheet, 1, headers);
-        print("Header berhasil ditambahkan. Memproses data baris...");
+
+        _allUsers.sort((a, b) => b.joinDate.compareTo(a.joinDate));
 
         List<List<dynamic>> rows = _allUsers.map((user) => [
             user.nama, user.email, user.role, user.joinDate.toIso8601String(), user.status ? 'Aktif' : 'Nonaktif',
         ]).toList();
         
-        print("Data baris selesai diproses. Mengirim ${rows.length} baris ke Google Sheets...");
         await _sheetsService.appendRows(worksheet, rows);
 
         _exportUsersMessage = "Berhasil mengekspor ${rows.length} data pengguna!";
-        print("--- Ekspor Pengguna Selesai ---");
         return true;
     } catch(e) {
         _exportUsersMessage = "Terjadi kesalahan fatal saat ekspor: $e";
-        print(_exportUsersMessage);
         return false;
     } finally {
         _isExportingUsers = false;

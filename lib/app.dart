@@ -3,7 +3,7 @@ import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
 import 'package:admin_dashboard_template/core/theme/app_theme.dart';
-import 'package:admin_dashboard_template/providers/authentication_provider.dart';
+import 'package:admin_dashboard_template/providers/auth/authentication_provider.dart';
 import 'package:admin_dashboard_template/providers/banner_provider.dart';
 import 'package:admin_dashboard_template/providers/chat_provider.dart';
 import 'package:admin_dashboard_template/providers/infoss_provider.dart';

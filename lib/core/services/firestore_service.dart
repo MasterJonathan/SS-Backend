@@ -321,21 +321,18 @@ class FirestoreService {
 
     int newPosts = 0;
     final collections = [
-      NEWS_COLLECTION,
-      KAWANSS_COLLECTION,
-      KONTRIBUTOR_COLLECTION,
+      {'name': NEWS_COLLECTION, 'field': 'uploadDate'}, 
+      {'name': KAWANSS_COLLECTION, 'field': 'uploadDate'}, 
+      {'name': KONTRIBUTOR_COLLECTION, 'field': 'uploadDate'}
     ];
-    for (var collection in collections) {
-      final snapshot = await _db.collection(collection).get();
-      for (var doc in snapshot.docs) {
-        DateTime? date;
-        if (collection == NEWS_COLLECTION)
-          date = NewsModel.fromFirestore(doc, null).uploadDate;
-        if (collection == KAWANSS_COLLECTION)
-          date = KawanssModel.fromFirestore(doc, null).uploadDate;
-        if (collection == KONTRIBUTOR_COLLECTION)
-          date = KontributorModel.fromFirestore(doc, null).uploadDate;
-        if (date != null && date.isAfter(thirtyDaysAgo)) newPosts++;
+    for (var collectionInfo in collections) {
+      final snapshot = await _db.collection(collectionInfo['name']!).get();
+      for(var doc in snapshot.docs) {
+        final tsField = doc.data()[collectionInfo['field']!];
+        if (tsField is Timestamp) {
+            final date = tsField.toDate();
+            if(date.isAfter(thirtyDaysAgo)) newPosts++;
+        }
       }
     }
 
@@ -361,40 +358,75 @@ class FirestoreService {
         .toList();
   }
 
-  Future<List<DateTime>> getTrafficDataInRange(
-    DateTime startTime,
-    DateTime endTime,
-  ) async {
-    final snapshot = await _db.collection('view_analytics').get();
+  Future<List<DateTime>> getTrafficDataInRange(DateTime startTime, DateTime endTime) async {
+    final snapshot = await _db.collection('view_analytics')
+      .where('timestamp', isGreaterThanOrEqualTo: startTime)
+      .where('timestamp', isLessThanOrEqualTo: endTime)
+      .get();
 
     final List<DateTime> timestamps = [];
     for (var doc in snapshot.docs) {
       try {
         final tsField = doc.get('timestamp');
-        DateTime? ts;
-
         if (tsField is Timestamp) {
-          ts = tsField.toDate();
-        } else if (tsField is String) {
-          try {
-            if (tsField.contains('/')) {
-              ts = DateFormat('MM/dd/yyyy HH:mm').parse(tsField);
-            } else {
-              ts = DateTime.parse(tsField);
-            }
-          } catch (e) {
-            print('Gagal mem-parsing string tanggal: "$tsField". Error: $e');
-            ts = null;
-          }
-        }
-
-        if (ts != null && ts.isAfter(startTime) && ts.isBefore(endTime)) {
-          timestamps.add(ts);
+            timestamps.add(tsField.toDate());
         }
       } catch (e) {
-        print(
-          "Melewatkan dokumen dengan format timestamp tidak valid: ${doc.id}. Error: $e",
+        print("Melewatkan dokumen dengan format timestamp tidak valid: ${doc.id}. Error: $e");
+      }
+    }
+    return timestamps;
+  }
+
+  Future<List<DateTime>> getPostsTraffic(DateTime startTime, DateTime endTime) async {
+    final List<DateTime> timestamps = [];
+    final collections = [
+      {'name': NEWS_COLLECTION, 'field': 'tanggalPosting'}, 
+      {'name': KAWANSS_COLLECTION, 'field': 'uploadDate'}, 
+      {'name': KONTRIBUTOR_COLLECTION, 'field': 'uploadDate'}
+    ];
+
+    for (var collectionInfo in collections) {
+      final snapshot = await _db.collection(collectionInfo['name']!)
+          .where(collectionInfo['field']!, isGreaterThanOrEqualTo: startTime)
+          .where(collectionInfo['field']!, isLessThanOrEqualTo: endTime)
+          .get();
+          
+      for (var doc in snapshot.docs) {
+        final tsField = doc.data()[collectionInfo['field']!];
+        if (tsField is Timestamp) {
+          timestamps.add(tsField.toDate());
+        }
+      }
+    }
+    return timestamps;
+  }
+
+  Future<List<DateTime>> getNewUsersTraffic(DateTime startTime, DateTime endTime) async {
+    final List<DateTime> timestamps = [];
+    final snapshot = await _db.collection(USERS_COLLECTION).get();
+
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
+      if (data.containsKey('aktivitas') && data['aktivitas'] is List) {
+        final activities = data['aktivitas'] as List;
+        final registrationActivity = activities.firstWhere(
+          (activity) => activity is Map && activity['namaAktivitas'] == 'User registration',
+          orElse: () => null,
         );
+
+        if (registrationActivity != null && registrationActivity.containsKey('waktu')) {
+          try {
+            final joinTimestamp = registrationActivity['waktu'] as Timestamp;
+            final joinDate = joinTimestamp.toDate();
+
+            if (joinDate.isAfter(startTime) && joinDate.isBefore(endTime)) {
+              timestamps.add(joinDate);
+            }
+          } catch (e) {
+            print("Gagal memproses waktu untuk user ${doc.id}: ${registrationActivity['waktu']}. Error: $e");
+          }
+        }
       }
     }
     return timestamps;
