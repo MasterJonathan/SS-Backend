@@ -64,6 +64,9 @@ class _ProfilePageState extends State<ProfilePage> {
         final updatedUser = UserModel(
           id: authProvider.user!.id,
           nama: _nameController.text,
+          username: authProvider.user!.username,
+          status: authProvider.user!.status,
+          joinDate: authProvider.user!.joinDate,
           email: authProvider.user!.email,
           role: authProvider.user!.role,
           photoURL: authProvider.user!.photoURL,
@@ -74,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
           
           // aktivitas: authProvider.user!.aktivitas,
           // namaAktivitas: authProvider.user!.namaAktivitas,
-          waktu: authProvider.user!.waktu,
           alamat: authProvider.user!.alamat,
           jenisKelamin: authProvider.user!.jenisKelamin,
           nomorHp: authProvider.user!.nomorHp,

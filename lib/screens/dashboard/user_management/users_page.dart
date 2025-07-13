@@ -1,5 +1,3 @@
-
-
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/user_model.dart';
 import 'package:admin_dashboard_template/providers/user_provider.dart';
@@ -33,7 +31,6 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
     super.dispose();
   }
 
-  
   void _showAddEditDialog({UserModel? user}) {
     final isEditing = user != null;
     final formKey = GlobalKey<FormState>();
@@ -52,38 +49,61 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextFormField(controller: nameController, decoration: const InputDecoration(labelText: 'Nama'), validator: (v) => v!.isEmpty ? 'Wajib diisi' : null),
+                  TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Nama'),
+                    validator: (v) => v!.isEmpty ? 'Wajib diisi' : null,
+                  ),
                   const SizedBox(height: 16),
-                  TextFormField(controller: emailController, decoration: const InputDecoration(labelText: 'Email'), enabled: !isEditing, validator: (v) => v!.isEmpty ? 'Wajib diisi' : null),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    enabled: !isEditing,
+                    validator: (v) => v!.isEmpty ? 'Wajib diisi' : null,
+                  ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: selectedRole,
                     decoration: const InputDecoration(labelText: 'Role'),
-                    items: ['User', 'Admin', 'Editor', 'Moderator'].map((role) => DropdownMenuItem(value: role, child: Text(role))).toList(),
-                    onChanged: (value) { if (value != null) { selectedRole = value; } },
+                    items:
+                        ['User', 'Admin', 'Editor', 'Moderator']
+                            .map(
+                              (role) => DropdownMenuItem(
+                                value: role,
+                                child: Text(role),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        selectedRole = value;
+                      }
+                    },
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Batal')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
+            ),
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   final provider = context.read<UserProvider>();
                   if (isEditing) {
-                    
                     final Map<String, dynamic> updatedData = {
                       'nama': nameController.text,
                       'role': selectedRole,
                     };
 
-                    
                     await provider.updateUserPartial(user.id, updatedData);
-
                   } else {
-                    print("Penambahan user baru seharusnya melalui halaman registrasi.");
+                    print(
+                      "Penambahan user baru seharusnya melalui halaman registrasi.",
+                    );
                   }
                   Navigator.of(context).pop();
                 }
@@ -102,15 +122,19 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
       builder: (context, provider, child) {
         List<UserModel> filteredData;
         final query = _searchController.text.toLowerCase();
-        
+
         if (query.isEmpty) {
           filteredData = provider.users;
         } else {
-          filteredData = provider.users.where((user) =>
-            user.nama.toLowerCase().contains(query) ||
-            user.email.toLowerCase().contains(query) ||
-            user.role.toLowerCase().contains(query)
-          ).toList();
+          filteredData =
+              provider.users
+                  .where(
+                    (user) =>
+                        user.nama.toLowerCase().contains(query) ||
+                        user.email.toLowerCase().contains(query) ||
+                        user.role.toLowerCase().contains(query),
+                  )
+                  .toList();
         }
 
         return CustomCard(
@@ -121,21 +145,30 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('User Management', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'User Management',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(
                     width: 250,
                     child: TextField(
                       controller: _searchController,
-                      decoration: const InputDecoration(labelText: 'Search...', prefixIcon: Icon(Icons.search)),
+                      decoration: const InputDecoration(
+                        labelText: 'Search',
+                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
               if (provider.state == UserViewState.Busy)
-                const Expanded(child: Center(child: CircularProgressIndicator()))
+                const Expanded(
+                  child: Center(child: CircularProgressIndicator()),
+                )
               else if (provider.errorMessage != null)
-                Expanded(child: Center(child: Text('Error: ${provider.errorMessage}')))
+                Expanded(
+                  child: Center(child: Text('Error: ${provider.errorMessage}')),
+                )
               else
                 Expanded(
                   child: SingleChildScrollView(
@@ -144,65 +177,93 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                       width: double.infinity,
                       child: DataTable(
                         columns: const [
-                          DataColumn(label: Text('Nama')),
-                          DataColumn(label: Text('Email')),
+                          DataColumn(label: Text('Username')),
+                          DataColumn(label: Text('Status')),
                           DataColumn(label: Text('Role')),
-                          DataColumn(label: Text('Tgl Registrasi')), 
-                          DataColumn(label: Text('Status')),       
+                          DataColumn(label: Text('Tanggal Bergabung')),
                           DataColumn(label: Text('Aksi')),
                         ],
-                        rows: filteredData.map((user) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(user.nama)),
-                              DataCell(Text(user.email)),
-                              DataCell(
-                                Chip(
-                                  label: Text(user.role),
-                                  backgroundColor: AppColors.primary.withOpacity(0.1),
-                                  labelStyle: TextStyle(color: AppColors.primary),
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                ),
-                              ),
-                              
-                              DataCell(Text(user.waktu != null ? _dateFormatter.format(user.waktu!) : '-')),
-                              // DataCell(
-                              //   Chip(
-                              //     label: Text(user.isActive ? 'Active' : 'Inactive'),
-                              //     backgroundColor: user.isActive ? AppColors.success.withOpacity(0.1) : AppColors.error.withOpacity(0.1),
-                              //     labelStyle: TextStyle(color: user.isActive ? AppColors.success : AppColors.error),
-                              //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              //   ),
-                              // ),
-                              DataCell(
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, color: AppColors.primary),
-                                      tooltip: 'Edit User',
-                                      onPressed: () => _showAddEditDialog(user: user),
+                        rows:
+                            filteredData.map((user) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(user.nama)),
+
+                                  DataCell(
+                                    Chip(
+                                      label: Text(
+                                        user.status ? 'Active' : 'Inactive',
+                                      ),
+                                      backgroundColor:
+                                          user.status
+                                              ? AppColors.success.withOpacity(
+                                                0.1,
+                                              )
+                                              : AppColors.error.withOpacity(
+                                                0.1,
+                                              ),
+                                      labelStyle: TextStyle(
+                                        color:
+                                            user.status
+                                                ? AppColors.success
+                                                : AppColors.error,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
                                     ),
-                                    
-                                    // IconButton(
-                                    //   icon: Icon(
-                                    //     user.isActive ? Icons.block : Icons.power_settings_new,
-                                    //     color: user.isActive ? AppColors.error : AppColors.success,
-                                    //   ),
-                                    //   tooltip: user.isActive ? 'Nonaktifkan User' : 'Aktifkan User',
-                                    //   onPressed: () async {
-                                    //     final newStatus = !user.isActive;
-                                    //     await context.read<UserProvider>().updateUserPartial(
-                                    //       user.id,
-                                    //       {'isActive': newStatus},
-                                    //     );
-                                    //   },
-                                    // ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
+                                  ),
+                                  DataCell(
+                                    Chip(
+                                      label: Text(user.role),
+                                      backgroundColor: AppColors.primary
+                                          .withOpacity(0.1),
+                                      labelStyle: TextStyle(
+                                        color: AppColors.primary,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(Text(_dateFormatter.format(user.joinDate))),
+                                  DataCell(
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: AppColors.primary,
+                                          ),
+                                          tooltip: 'Edit User',
+                                          onPressed:
+                                              () => _showAddEditDialog(
+                                                user: user,
+                                              ),
+                                        ),
+
+                                        IconButton(
+                                          icon: Icon(
+                                            user.status ? Icons.block : Icons.power_settings_new,
+                                            color: user.status ? AppColors.error : AppColors.success,
+                                          ),
+                                          tooltip: user.status ? 'Nonaktifkan User' : 'Aktifkan User',
+                                          onPressed: () async {
+                                            final newStatus = !user.status;
+                                            await context.read<UserProvider>().updateUserPartial(
+                                              user.id,
+                                              {'status': newStatus},
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),

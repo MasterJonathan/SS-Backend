@@ -234,11 +234,11 @@ class FirestoreService {
 
     for (var doc in allUsersSnapshot.docs) {
         final user = UserModel.fromFirestore(doc, null);
-        if (user.waktu != null) {
-          if (user.waktu!.isAfter(thirtyDaysAgo)) {
+        if (user.joinDate != null) {
+          if (user.joinDate!.isAfter(thirtyDaysAgo)) {
             newUsersCount++;
           }
-          if (user.waktu!.isAfter(sixtyDaysAgo) && user.waktu!.isBefore(thirtyDaysAgo)) {
+          if (user.joinDate!.isAfter(sixtyDaysAgo) && user.joinDate!.isBefore(thirtyDaysAgo)) {
             previousNewUsersCount++;
           }
         }

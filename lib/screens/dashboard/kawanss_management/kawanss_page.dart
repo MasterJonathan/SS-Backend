@@ -14,7 +14,6 @@ class KawanssPage extends StatefulWidget {
 }
 
 class _KawanssPageState extends State<KawanssPage> {
-  
   late List<KawanssModel> _filteredData;
   final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd\nHH:mm:ss');
@@ -23,11 +22,9 @@ class _KawanssPageState extends State<KawanssPage> {
   @override
   void initState() {
     super.initState();
-    
     final provider = Provider.of<KawanssProvider>(context, listen: false);
     _filteredData = provider.kawanssList;
 
-    
     _searchController.addListener(() {
       setState(() {});
     });
@@ -39,7 +36,6 @@ class _KawanssPageState extends State<KawanssPage> {
     super.dispose();
   }
 
-  
   void _performFilter(String query, List<KawanssModel> allData) {
     if (query.isEmpty) {
       _filteredData = allData;
@@ -63,50 +59,41 @@ class _KawanssPageState extends State<KawanssPage> {
   Widget build(BuildContext context) {
     return Consumer<KawanssProvider>(
       builder: (context, provider, child) {
-        
         _performFilter(_searchController.text, provider.kawanssList);
-        
 
         return Column(
           key: const PageStorageKey('kawanssPage'),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24),
-                CustomCard(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.add, size: 16),
-                        label: const Text('Tambah Kawan SS'),
-                        onPressed: () {
-                          /* TODO: Implement Add Dialog */
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      _buildTableControls(),
-                      const SizedBox(height: 20),
-                      if (provider.state == KawanssViewState.Busy &&
-                          provider.kawanssList.isEmpty)
-                        const Center(child: CircularProgressIndicator())
-                      else if (provider.errorMessage != null)
-                        Center(child: Text('Error: ${provider.errorMessage}'))
-                      else
-                        SizedBox(
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: _buildDataTable(provider),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CustomCard(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildTableControls(),
+                        const SizedBox(height: 20),
+                        if (provider.state == KawanssViewState.Busy &&
+                            provider.kawanssList.isEmpty)
+                          const Center(child: CircularProgressIndicator())
+                        else if (provider.errorMessage != null)
+                          Center(child: Text('Error: ${provider.errorMessage}'))
+                        else
+                          SizedBox(
+                            width: double.infinity,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: _buildDataTable(provider),
+                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
           ],
         );
@@ -115,12 +102,25 @@ class _KawanssPageState extends State<KawanssPage> {
   }
 
   Widget _buildTableControls() {
-    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
+            SizedBox(
+              width: 250,
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: 'Search',
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             const Text('Show'),
             const SizedBox(width: 8),
             Container(
@@ -153,15 +153,10 @@ class _KawanssPageState extends State<KawanssPage> {
             const Text('entries'),
           ],
         ),
-        SizedBox(
-          width: 250,
-          child: TextField(
-            controller: _searchController,
-            decoration: const InputDecoration(
-              labelText: 'Search:',
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            ),
-          ),
+        ElevatedButton.icon(
+          icon: const Icon(Icons.add, size: 16),
+          label: const Text('Tambah Kawan SS'),
+          onPressed: () {},
         ),
       ],
     );
@@ -170,7 +165,6 @@ class _KawanssPageState extends State<KawanssPage> {
   Widget _buildDataTable(KawanssProvider provider) {
     return DataTable(
       columns: const [
-        DataColumn(label: Text('Aksi')),
         DataColumn(label: Text('Judul')),
         DataColumn(label: Text('Kategori')),
         DataColumn(label: Text('Dilihat')),
@@ -180,13 +174,37 @@ class _KawanssPageState extends State<KawanssPage> {
         DataColumn(label: Text('Tanggal\nPublish')),
         DataColumn(label: Text('Tanggal\nPosting')),
         DataColumn(label: Text('Diposting\nOleh')),
+        DataColumn(label: Text('Aksi')),
       ],
       rows:
           _filteredData.map((item) {
-            
             bool isActive = !item.deleted;
             return DataRow(
               cells: [
+                DataCell(SizedBox(width: 250, child: Text(item.title ?? '-'))),
+                DataCell(const Text('-')),
+                DataCell(Text(item.jumlahLaporan.toString())),
+                DataCell(Text(item.jumlahLike.toString())),
+                DataCell(Text(item.jumlahComment.toString())),
+                DataCell(
+                  Chip(
+                    label: Text(isActive ? 'Active' : 'Inactive'),
+                    backgroundColor:
+                        isActive
+                            ? AppColors.success.withOpacity(0.1)
+                            : AppColors.error.withOpacity(0.1),
+                    labelStyle: TextStyle(
+                      color: isActive ? AppColors.success : AppColors.error,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                  ),
+                ), 
+                DataCell(Text(_dateFormatter.format(item.uploadDate))),
+                DataCell(Text(_dateFormatter.format(item.uploadDate))),
+                DataCell(Text(item.accountName ?? '-')),
                 DataCell(
                   Row(
                     children: [
@@ -218,25 +236,6 @@ class _KawanssPageState extends State<KawanssPage> {
                     ],
                   ),
                 ),
-                DataCell(SizedBox(width: 250, child: Text(item.title ?? '-'))),
-                DataCell(const Text('-')),
-                DataCell(Text(item.jumlahLaporan.toString())),
-                DataCell(Text(item.jumlahLike.toString())),
-                DataCell(Text(item.jumlahComment.toString())),
-                DataCell(
-                  Icon(
-                    isActive
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked,
-                    color:
-                        isActive
-                            ? AppColors.success
-                            : AppColors.foreground.withOpacity(0.5),
-                  ),
-                ),
-                DataCell(Text(_dateFormatter.format(item.uploadDate))),
-                DataCell(Text(_dateFormatter.format(item.uploadDate))),
-                DataCell(Text(item.accountName ?? '-')),
               ],
             );
           }).toList(),
