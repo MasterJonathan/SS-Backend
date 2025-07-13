@@ -8,6 +8,8 @@ import 'package:admin_dashboard_template/core/theme/app_theme.dart';
 import 'package:admin_dashboard_template/providers/authentication_provider.dart';
 import 'package:admin_dashboard_template/providers/banner_provider.dart';
 import 'package:admin_dashboard_template/providers/chat_provider.dart';
+import 'package:admin_dashboard_template/providers/infoss_provider.dart';
+import 'package:admin_dashboard_template/providers/kawanss_post_provider.dart';
 import 'package:admin_dashboard_template/providers/kawanss_provider.dart';
 import 'package:admin_dashboard_template/providers/kontributor_provider.dart';
 import 'package:admin_dashboard_template/providers/news_provider.dart';
@@ -52,6 +54,17 @@ class AdminDashboardApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<KawanssProvider>(
           create: (context) => KawanssProvider(
+            firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
+                // --- TAMBAHKAN PROVIDER BARU DI SINI ---
+        ChangeNotifierProvider<KawanssPostProvider>(
+          create: (context) => KawanssPostProvider(
+            firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
+        ChangeNotifierProvider<InfossProvider>(
+          create: (context) => InfossProvider(
             firestoreService: context.read<FirestoreService>(),
           ),
         ),

@@ -1,13 +1,12 @@
 import 'package:admin_dashboard_template/screens/dashboard/beritaweb/berita_web_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/chat_management_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/kawanss_management/banner_top_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/kawanss_management/kawanss_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/kontributor/kontributor_management_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/kontributor/kontributor_post_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/infoss_management/banner_top_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/infoss_management/infoss_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/kawanss/kawanss_management_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/kawanss/kawanss_post_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/report/report_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/calendar_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/charts_page.dart';
-import 'package:admin_dashboard_template/screens/dashboard/contributor_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/forms_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/overview_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/template/products_page.dart';
@@ -40,15 +39,15 @@ class DashboardLayout extends StatelessWidget {
 
       case DashboardPage.bannerTop:
         return const BannerTopPage();
-      case DashboardPage.kawanSS:
-        return const KawanssPage();
+      case DashboardPage.infoSS:
+        return const InfossPage();
       
       case DashboardPage.beritaWeb:
         return const BeritaWebPage();
-      case DashboardPage.kontributorManagement:
-        return const KontributorManagementPage();
-      case DashboardPage.kontributorPost:
-        return const KontributorPostPage();
+      case DashboardPage.kawanssManagement:
+        return const KawanssManagementPage();
+      case DashboardPage.kawanssPost:
+        return const KawanssPostPage();
       case DashboardPage.chatManagement:
         return const ChatManagementPage();
 
@@ -64,8 +63,6 @@ class DashboardLayout extends StatelessWidget {
         return const FormsDemoPage();
       case DashboardPage.profile:
         return const ProfilePage();
-      case DashboardPage.contributor:
-        return const ContributorPage();
       default:
         return const OverviewPage();
     }
@@ -127,8 +124,6 @@ class DashboardLayout extends StatelessWidget {
         return 'Form Elements';
       case DashboardPage.profile:
         return 'User Profile';
-      case DashboardPage.contributor:
-        return 'Contributor';
       default:
         return 'Dashboard';
     }
