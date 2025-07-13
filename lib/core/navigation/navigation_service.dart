@@ -19,7 +19,7 @@ enum DashboardPage {
   bannerTop,
   infoSS,
 
-  beritaWeb,
+  berita,
   kawanssManagement,
   kawanssPost,
 
@@ -29,7 +29,7 @@ enum DashboardPage {
   
   socialnetworkanalysis,
 
-
+  kategoriss,
 
   
 
@@ -42,8 +42,6 @@ enum DashboardPage {
 class NavigationService extends ChangeNotifier {
 
   DashboardPage _currentPage = DashboardPage.overview;
-
-  
   DashboardPage get currentPage => _currentPage;
 
 

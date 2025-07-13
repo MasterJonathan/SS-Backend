@@ -1,7 +1,8 @@
-import 'package:admin_dashboard_template/screens/dashboard/beritaweb/berita_web_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/berita/berita_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/chat_management_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/infoss_management/banner_top_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/infoss_management/infoss_page.dart';
+import 'package:admin_dashboard_template/screens/dashboard/kategori_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kawanss/kawanss_management_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/kawanss/kawanss_post_page.dart';
 import 'package:admin_dashboard_template/screens/dashboard/report/report_page.dart';
@@ -25,10 +26,9 @@ class DashboardLayout extends StatelessWidget {
 
   Widget _getPage(DashboardPage page) {
     switch (page) {
-
       case DashboardPage.overview:
         return const OverviewPage();
-      
+
       case DashboardPage.report:
         return const ReportPage();
 
@@ -41,9 +41,9 @@ class DashboardLayout extends StatelessWidget {
         return const BannerTopPage();
       case DashboardPage.infoSS:
         return const InfossPage();
-      
-      case DashboardPage.beritaWeb:
-        return const BeritaWebPage();
+
+      case DashboardPage.berita:
+        return const BeritaPage();
       case DashboardPage.kawanssManagement:
         return const KawanssManagementPage();
       case DashboardPage.kawanssPost:
@@ -51,7 +51,8 @@ class DashboardLayout extends StatelessWidget {
       case DashboardPage.chatManagement:
         return const ChatManagementPage();
 
-
+      case DashboardPage.kategoriss:
+        return const KategoriPage();
 
       case DashboardPage.products:
         return const ProductsPage();
@@ -110,9 +111,33 @@ class DashboardLayout extends StatelessWidget {
 
   String _getPageTitle(DashboardPage page) {
     switch (page) {
+      // Halaman-halaman baru berdasarkan daftar Anda
       case DashboardPage.overview:
         return 'Overview';
-      case DashboardPage.users:
+      case DashboardPage.report:
+        return 'Report Management';
+      case DashboardPage.settings:
+        return 'Website Settings';
+      case DashboardPage.userAdminManagement:
+        return 'User Admin Management'; // Atau 'User Management' jika sama
+      case DashboardPage.bannerTop:
+        return 'Banner Top Management';
+      case DashboardPage.infoSS:
+        return 'Info SS Management';
+      case DashboardPage.berita:
+        return 'Berita Web Management';
+      case DashboardPage.kawanssManagement:
+        return 'Kawan SS Management';
+      case DashboardPage.kawanssPost:
+        return 'Post Kawan SS'; // Atau 'Kontributor Post' jika itu halamannya
+      case DashboardPage.chatManagement:
+        return 'Chat Management';
+      case DashboardPage.kategoriss:
+        return 'Kategori Management';
+
+      // Halaman-halaman lama dari contoh awal
+      case DashboardPage
+          .users: // Jika 'users' dan 'userAdminManagement' berbeda
         return 'User Management';
       case DashboardPage.products:
         return 'Product Management';
@@ -124,6 +149,8 @@ class DashboardLayout extends StatelessWidget {
         return 'Form Elements';
       case DashboardPage.profile:
         return 'User Profile';
+
+      // Default jika ada case yang terlewat
       default:
         return 'Dashboard';
     }

@@ -127,8 +127,8 @@ class ReportProvider extends ChangeNotifier {
 
         _allPosts = [...news, ...kawanss, ...kontributor];
         _allPosts.sort((a, b) {
-            DateTime dateA = (a is NewsModel) ? a.tanggalPosting : (a is KawanssModel ? a.uploadDate : (a as KontributorModel).uploadDate);
-            DateTime dateB = (b is NewsModel) ? b.tanggalPosting : (b is KawanssModel ? b.uploadDate : (b as KontributorModel).uploadDate);
+            DateTime dateA = (a is NewsModel) ? a.uploadDate! : (a is KawanssModel ? a.uploadDate : (a as KontributorModel).uploadDate);
+            DateTime dateB = (b is NewsModel) ? b.uploadDate! : (b is KawanssModel ? b.uploadDate : (b as KontributorModel).uploadDate);
             return dateB.compareTo(dateA);
         });
 
@@ -273,8 +273,8 @@ class ReportProvider extends ChangeNotifier {
         int comments = 0;
 
         if (post is NewsModel) {
-            title = post.judul; type = 'Berita Web'; date = post.tanggalPosting.toIso8601String();
-            author = post.dipostingOleh; views = post.dilihat; likes = post.like; comments = 0;
+            title = post.title; type = 'Berita Web'; date = post.uploadDate!.toIso8601String();
+            author = post.pengirim!; views = post.jumlahView; likes = post.jumlahLike; comments = 0;
         } else if (post is KawanssModel) {
             title = post.title ?? 'Tanpa Judul'; type = 'Kawan SS'; date = post.uploadDate.toIso8601String();
             author = post.accountName ?? 'Anonim'; views = post.jumlahLaporan; likes = post.jumlahLike; comments = post.jumlahComment;
