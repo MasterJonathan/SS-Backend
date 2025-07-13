@@ -14,18 +14,17 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final TextEditingController _audioUrlController = TextEditingController();
   final TextEditingController _visualUrlController = TextEditingController();
   final TextEditingController _termsController = TextEditingController();
-  
+
   bool _isChatActive = true;
-  bool _isDataInitialized = false; // Flag untuk menandai apakah data sudah di-load
+  bool _isDataInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // Kita tidak mengambil data di sini lagi untuk menghindari race condition
   }
 
   @override
@@ -46,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void _submitSettings() async {
     if (_formKey.currentState!.validate()) {
       final settingsProvider = context.read<SettingsProvider>();
-      
+
       final newSettings = SettingsModel(
         audioStreamingUrl: _audioUrlController.text,
         visualRadioUrl: _visualUrlController.text,
@@ -59,7 +58,11 @@ class _SettingsPageState extends State<SettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(success ? 'Pengaturan berhasil disimpan!' : 'Gagal menyimpan pengaturan.'),
+            content: Text(
+              success
+                  ? 'Pengaturan berhasil disimpan!'
+                  : 'Gagal menyimpan pengaturan.',
+            ),
             backgroundColor: success ? AppColors.success : AppColors.error,
           ),
         );
@@ -71,28 +74,27 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, provider, child) {
-        // Tampilkan loading indicator saat provider sedang sibuk DAN data belum ada
-        if (provider.state == SettingsViewState.Busy && provider.settings == null) {
+        if (provider.state == SettingsViewState.Busy &&
+            provider.settings == null) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Tampilkan error jika ada dan data belum berhasil dimuat
         if (provider.errorMessage != null && provider.settings == null) {
           return Center(child: Text('Error: ${provider.errorMessage}'));
         }
 
-        // Jika data dari provider null (misal dokumen belum ada di Firestore), tampilkan pesan
         if (provider.settings == null) {
-          return const Center(child: Text('Pengaturan tidak ditemukan. Silakan simpan pengaturan baru.'));
+          return const Center(
+            child: Text(
+              'Pengaturan tidak ditemukan. Silakan simpan pengaturan baru.',
+            ),
+          );
         }
 
-        // --- LOGIKA PENGISIAN CONTROLLER YANG AMAN ---
-        // Hanya isi controller satu kali saat data pertama kali tersedia
         if (!_isDataInitialized) {
           _loadSettingsToControllers(provider.settings!);
           _isDataInitialized = true;
         }
-        // -------------------------------------------
 
         return SingleChildScrollView(
           key: const PageStorageKey('settingsPage'),
@@ -107,18 +109,35 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTextField(label: 'Audio Streaming URL', controller: _audioUrlController),
+                      _buildTextField(
+                        label: 'Audio Streaming URL',
+                        controller: _audioUrlController,
+                      ),
                       const SizedBox(height: 20),
-                      _buildTextField(label: 'Visual Radio URL', controller: _visualUrlController),
+                      _buildTextField(
+                        label: 'Visual Radio URL',
+                        controller: _visualUrlController,
+                      ),
                       const SizedBox(height: 20),
-                      Text('Term and Conditions', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.foreground, fontWeight: FontWeight.w600)),
+                      Text(
+                        'Term and Conditions',
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
+                          color: AppColors.foreground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _termsController,
                         maxLines: 15,
                         minLines: 10,
                         keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(hintText: 'Enter terms and conditions here...', alignLabelWithHint: true),
+                        decoration: const InputDecoration(
+                          hintText: 'Enter terms and conditions here...',
+                          alignLabelWithHint: true,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       _buildCheckbox(),
@@ -126,11 +145,27 @@ class _SettingsPageState extends State<SettingsPage> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: ElevatedButton(
-                          onPressed: provider.state == SettingsViewState.Busy ? null : _submitSettings,
-                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
-                          child: provider.state == SettingsViewState.Busy 
-                              ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) 
-                              : const Text('Submit'),
+                          onPressed:
+                              provider.state == SettingsViewState.Busy
+                                  ? null
+                                  : _submitSettings,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
+                          ),
+                          child:
+                              provider.state == SettingsViewState.Busy
+                                  ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                  : const Text('Submit'),
                         ),
                       ),
                     ],
@@ -140,24 +175,35 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
         );
-      }
+      },
     );
   }
 
-  Widget _buildTextField({required String label, required TextEditingController controller}) {
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.foreground, fontWeight: FontWeight.w600)),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: AppColors.foreground,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
-          decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12)),
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          ),
         ),
       ],
     );
   }
-  
+
   Widget _buildCheckbox() {
     return Row(
       children: [
@@ -179,7 +225,13 @@ class _SettingsPageState extends State<SettingsPage> {
         const SizedBox(width: 8),
         InkWell(
           onTap: () => setState(() => _isChatActive = !_isChatActive),
-          child: Text('Chat Aktif ?', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.foreground, fontWeight: FontWeight.w600)),
+          child: Text(
+            'Chat Aktif ?',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.foreground,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ],
     );

@@ -2,7 +2,7 @@
 
 import 'package:admin_dashboard_template/core/navigation/app_routes.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/providers/authentication_provider.dart';
+import 'package:admin_dashboard_template/providers/auth/authentication_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
