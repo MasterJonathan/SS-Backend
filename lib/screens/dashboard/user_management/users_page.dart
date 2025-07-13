@@ -16,6 +16,7 @@ class UsersAdminPage extends StatefulWidget {
 class _UsersAdminPageState extends State<UsersAdminPage> {
   final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd HH:mm');
+  String _entriesToShow = '10'; // <-- TAMBAHKAN BARIS INI
 
   @override
   void initState() {
@@ -116,6 +117,57 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
     );
   }
 
+  Widget _buildTableControls() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            const Text('Show'),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.foreground.withOpacity(0.2),
+                ),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _entriesToShow,
+                  items:
+                      <String>['10', '25', '50', '100', 'All'].map((
+                        String value,
+                      ) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _entriesToShow = newValue!;
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text('entries'),
+          ],
+        ),
+        SizedBox(
+          width: 250,
+          child: TextField(
+            controller: _searchController,
+            decoration: const InputDecoration(labelText: 'Search'),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
@@ -137,29 +189,18 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                   .toList();
         }
 
+        // <-- TAMBAHKAN LOGIKA PAGINASI DI SINI
+        final int entriesCount =
+            int.tryParse(_entriesToShow) ?? filteredData.length;
+        final paginatedData = filteredData.take(entriesCount).toList();
+        // -->
+
         return CustomCard(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'User Management',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 250,
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        labelText: 'Search',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildTableControls(),
               const SizedBox(height: 20),
               if (provider.state == UserViewState.Busy)
                 const Expanded(
@@ -184,7 +225,7 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                           DataColumn(label: Text('Aksi')),
                         ],
                         rows:
-                            filteredData.map((user) {
+                            paginatedData.map((user) {
                               return DataRow(
                                 cells: [
                                   DataCell(Text(user.nama)),
@@ -228,7 +269,9 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
                                       ),
                                     ),
                                   ),
-                                  DataCell(Text(_dateFormatter.format(user.joinDate))),
+                                  DataCell(
+                                    Text(_dateFormatter.format(user.joinDate)),
+                                  ),
                                   DataCell(
                                     Row(
                                       children: [
@@ -246,16 +289,25 @@ class _UsersAdminPageState extends State<UsersAdminPage> {
 
                                         IconButton(
                                           icon: Icon(
-                                            user.status ? Icons.block : Icons.power_settings_new,
-                                            color: user.status ? AppColors.error : AppColors.success,
+                                            user.status
+                                                ? Icons.block
+                                                : Icons.power_settings_new,
+                                            color:
+                                                user.status
+                                                    ? AppColors.error
+                                                    : AppColors.success,
                                           ),
-                                          tooltip: user.status ? 'Nonaktifkan User' : 'Aktifkan User',
+                                          tooltip:
+                                              user.status
+                                                  ? 'Nonaktifkan User'
+                                                  : 'Aktifkan User',
                                           onPressed: () async {
                                             final newStatus = !user.status;
-                                            await context.read<UserProvider>().updateUserPartial(
-                                              user.id,
-                                              {'status': newStatus},
-                                            );
+                                            await context
+                                                .read<UserProvider>()
+                                                .updateUserPartial(user.id, {
+                                                  'status': newStatus,
+                                                });
                                           },
                                         ),
                                       ],

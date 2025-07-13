@@ -96,7 +96,7 @@ class AuthenticationProvider extends ChangeNotifier {
           jenisKelamin: '',
           nomorHp: '',
           tanggalLahir: '',
-          status: false,
+          status: true,
           joinDate: DateTime.now(),
         );
         // Panggil service untuk menyimpan profil baru ini ke Firestore

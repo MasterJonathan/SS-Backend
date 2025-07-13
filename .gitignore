@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+ss-sna-credentials.json
 
 # IntelliJ related
 *.iml

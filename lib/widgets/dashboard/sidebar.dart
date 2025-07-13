@@ -1,7 +1,7 @@
 import 'package:admin_dashboard_template/core/navigation/navigation_service.dart';
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/sidebar_menu_item.dart';
-import 'package:admin_dashboard_template/widgets/dashboard/sidebar_clickable_item.dart'; 
+import 'package:admin_dashboard_template/widgets/dashboard/sidebar_clickable_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,6 @@ class _SidebarState extends State<Sidebar> {
   }
 
   List<SidebarMenuItem> _buildMenuItems() {
-    
     return [
       SidebarMenuItem(
         title: 'Overview',
@@ -46,7 +45,7 @@ class _SidebarState extends State<Sidebar> {
             page: DashboardPage.users,
           ),
           SidebarMenuItem(
-            title: '[BELUM] Settings',
+            title: '[OK] Settings',
             icon: Icons.radio_button_unchecked_outlined,
             page: DashboardPage.settings,
           ),
@@ -83,11 +82,6 @@ class _SidebarState extends State<Sidebar> {
             page: DashboardPage.bannerTop,
           ),
           SidebarMenuItem(
-            title: '[BELUM] Kategori Info SS',
-            icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.bannerTop,
-          ),
-          SidebarMenuItem(
             title: '[OK] Info SS',
             icon: Icons.radio_button_unchecked_outlined,
             page: DashboardPage.infoSS,
@@ -102,27 +96,27 @@ class _SidebarState extends State<Sidebar> {
           SidebarMenuItem(
             title: '[BELUM] Berita',
             icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.beritaWeb,
+            page: DashboardPage.berita,
           ),
           SidebarMenuItem(
             title: '[XX] Potret Netter',
             icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.beritaWeb,
+            page: DashboardPage.berita,
           ),
           SidebarMenuItem(
             title: '[XX] Video',
             icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.beritaWeb,
+            page: DashboardPage.berita,
           ),
           SidebarMenuItem(
             title: '[XX] Potret Kelana Kota',
             icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.beritaWeb,
+            page: DashboardPage.berita,
           ),
           SidebarMenuItem(
             title: '[XX] Podcast',
             icon: Icons.radio_button_unchecked_outlined,
-            page: DashboardPage.beritaWeb,
+            page: DashboardPage.berita,
           ),
         ],
       ),
@@ -201,6 +195,11 @@ class _SidebarState extends State<Sidebar> {
         ],
       ),
       SidebarMenuItem(
+        title: '[OK] Kategori SS',
+        icon: Icons.radio_button_unchecked_outlined,
+        page: DashboardPage.kategoriss,
+      ),
+      SidebarMenuItem(
         title: 'Products (Old)',
         icon: Icons.inventory_2_outlined,
         page: DashboardPage.products,
@@ -220,7 +219,6 @@ class _SidebarState extends State<Sidebar> {
         icon: Icons.edit_note_outlined,
         page: DashboardPage.forms,
       ),
-      
     ];
   }
 
@@ -236,7 +234,7 @@ class _SidebarState extends State<Sidebar> {
 
     return Container(
       width: 260,
-      color: AppColors.surface, 
+      color: AppColors.surface,
       child: Column(
         children: [
           Padding(
@@ -265,7 +263,6 @@ class _SidebarState extends State<Sidebar> {
                     item.isExpanded || isParentOfSelectedChild;
                 if (item.subItems != null && item.subItems!.isNotEmpty) {
                   return Container(
-                    
                     decoration: BoxDecoration(
                       color:
                           isParentEffectivelyActive
@@ -335,7 +332,6 @@ class _SidebarState extends State<Sidebar> {
                             item.subItems!
                                 .map(
                                   (subItem) => SidebarClickableItem(
-                                    
                                     icon: subItem.icon,
                                     title: subItem.title,
                                     isSelected: subItem.page == currentPage,
@@ -356,7 +352,6 @@ class _SidebarState extends State<Sidebar> {
                   );
                 } else {
                   return SidebarClickableItem(
-                    
                     icon: item.icon,
                     title: item.title,
                     isSelected: isDirectlySelected,
