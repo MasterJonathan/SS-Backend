@@ -1,5 +1,11 @@
+// lib/screens/dashboard/report/report_page.dart
+
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/infoss_model.dart';
+import 'package:admin_dashboard_template/models/kawanss_model.dart';
+import 'package:admin_dashboard_template/models/kontributor_model.dart';
+import 'package:admin_dashboard_template/models/news_model.dart';
+import 'package:admin_dashboard_template/models/user_model.dart';
 import 'package:admin_dashboard_template/screens/dashboard/report/report_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -19,12 +25,16 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  late Future<void> _initFuture;
 
   @override
   void initState() {
     super.initState();
+    // Memanggil fungsi init dari provider saat halaman pertama kali dibuat
+    _initFuture = Provider.of<ReportProvider>(context, listen: false).init();
+
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
     _fadeAnimation = Tween<double>(
@@ -34,7 +44,6 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    _animationController.forward();
   }
 
   @override
@@ -45,39 +54,73 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final reportProvider = context.watch<ReportProvider>();
-    final textTheme = Theme.of(context).textTheme;
+    return FutureBuilder(
+      future: _initFuture,
+      builder: (context, snapshot) {
+        // Saat proses inisialisasi berjalan, tampilkan loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text("Menginisialisasi Laporan..."),
+              ],
+            ),
+          );
+        }
 
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: ListView(
-        key: const PageStorageKey('reportPage'),
-        padding: const EdgeInsets.all(0),
-        children: [
-          _buildHeader(textTheme),
-          const SizedBox(height: 32),
-          _buildStatsGrid(reportProvider),
-          const SizedBox(height: 32),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 3,
-                child: _buildTopPosts(textTheme, reportProvider),
+        // Jika terjadi error saat inisialisasi, tampilkan pesan error
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Terjadi kesalahan saat inisialisasi: ${snapshot.error}"),
+          );
+        }
+
+        // Jika sudah selesai, tampilkan halaman
+        _animationController.forward();
+        return Consumer<ReportProvider>(
+          builder: (context, reportProvider, child) {
+            return FadeTransition(
+              opacity: _fadeAnimation,
+              child: ListView(
+                key: const PageStorageKey('reportPage'),
+                padding: const EdgeInsets.all(0),
+                children: [
+                  _buildHeader(Theme.of(context).textTheme),
+                  const SizedBox(height: 32),
+                  _buildStatsGrid(reportProvider),
+                  const SizedBox(height: 32),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: _buildTopPosts(Theme.of(context).textTheme, reportProvider),
+                      ),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        flex: 2,
+                        child: _buildAnalyticsCard(Theme.of(context).textTheme, reportProvider),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  _buildTrafficChartCard(Theme.of(context).textTheme, reportProvider),
+                  const SizedBox(height: 32),
+                  
+                  // KEDUA BAGIAN TABEL DI BAWAH INI SUDAH DIHAPUS
+                  // _buildAllPostsTable(Theme.of(context).textTheme, reportProvider),
+                  // const SizedBox(height: 32),
+                  // _buildAllUsersTable(Theme.of(context).textTheme, reportProvider),
+                  // const SizedBox(height: 32),
+                ],
               ),
-              const SizedBox(width: 24),
-              Expanded(
-                flex: 2,
-                child: _buildAnalyticsCard(textTheme, reportProvider),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          _buildTrafficChartCard(textTheme, reportProvider),
-          const SizedBox(height: 32),
-          _buildSheetDataTable(textTheme, reportProvider), // Menampilkan data Google Sheets
-        ],
-      ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -260,7 +303,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     if (provider.isStatsLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    
+
     return CustomCard(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -385,25 +428,14 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
 
   Color _getRankColor(int index) {
      switch (index) {
-      case 0: return const Color(0xFFFFD700); // Gold
-      case 1: return const Color(0xFFC0C0C0); // Silver
-      case 2: return const Color(0xFFCD7F32); // Bronze
+      case 0: return const Color(0xFFFFD700);
+      case 1: return const Color(0xFFC0C0C0);
+      case 2: return const Color(0xFFCD7F32);
       default: return Colors.grey.shade600;
     }
   }
 
   Widget _buildAnalyticsCard(TextTheme textTheme, ReportProvider provider) {
-    void _launchURL(String url) async {
-      final uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tidak bisa membuka $url')),
-        );
-      }
-    }
-  
     return CustomCard(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -433,16 +465,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
             ],
           ),
           const SizedBox(height: 24),
-          _buildActionButton(
-            icon: Icons.table_chart_outlined,
-            label: 'Buka Google Sheets',
-            colors: [const Color(0xFF188038), const Color(0xFF10B981)],
-            onPressed: () {
-              const sheetUrl = 'https://docs.google.com/spreadsheets/d/1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc';
-              _launchURL(sheetUrl);
-              FirebaseAnalytics.instance.logEvent(name: 'open_google_sheets', parameters: {'url': sheetUrl});
-            },
-          ),
+          _buildSheetsActionButton(context),
           const SizedBox(height: 16),
           _buildActionButton(
             icon: Icons.analytics_outlined,
@@ -459,7 +482,83 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required List<Color> colors, required VoidCallback onPressed}) {
+  Widget _buildSheetsActionButton(BuildContext context) {
+    final provider = context.read<ReportProvider>();
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc';
+
+    return PopupMenuButton<String>(
+      onSelected: (value) async {
+        switch (value) {
+          case 'open':
+            _launchURL(sheetUrl);
+            break;
+          case 'export_posts':
+            final success = await provider.exportPostsToSheet();
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(provider.exportPostsMessage ?? "Terjadi kesalahan."),
+                backgroundColor: success ? AppColors.success : AppColors.error,
+              ));
+            }
+            break;
+          case 'export_users':
+             final success = await provider.exportUsersToSheet();
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(provider.exportUsersMessage ?? "Terjadi kesalahan."),
+                backgroundColor: success ? AppColors.success : AppColors.error,
+              ));
+            }
+            break;
+        }
+      },
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: 'open',
+          child: ListTile(
+            leading: Icon(Icons.open_in_new),
+            title: Text('Buka di Sheets'),
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: 'export_posts',
+          enabled: !provider.isExportingPosts,
+          child: ListTile(
+            leading: provider.isExportingPosts ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.article_outlined),
+            title: Text('Export Data Postingan'),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'export_users',
+          enabled: !provider.isExportingUsers,
+          child: ListTile(
+            leading: provider.isExportingUsers ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.people_alt_outlined),
+            title: Text('Export Data Pengguna'),
+          ),
+        ),
+      ],
+      child: _buildActionButton(
+        icon: Icons.table_chart_outlined,
+        label: 'Aksi Google Sheets',
+        colors: [const Color(0xFF188038), const Color(0xFF10B981)],
+        onPressed: null,
+      ),
+    );
+  }
+
+  void _launchURL(String url) async {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tidak bisa membuka $url')),
+        );
+      }
+  }
+
+  Widget _buildActionButton({required IconData icon, required String label, required List<Color> colors, VoidCallback? onPressed}) {
     return Container(
       width: double.infinity,
       height: 56,
@@ -477,8 +576,8 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
           onTap: onPressed,
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -700,55 +799,6 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
             ],
           );
         }).toList(),
-      ),
-    );
-  }
-
-  // Widget baru untuk menampilkan data Google Sheets
-  Widget _buildSheetDataTable(TextTheme textTheme, ReportProvider provider) {
-    return CustomCard(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Data dari Google Sheets',
-                style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              ElevatedButton.icon(
-                onPressed: provider.isSheetDataLoading ? null : () => provider.fetchSheetData(),
-                icon: const Icon(Icons.refresh, size: 16),
-                label: const Text('Tarik Data'),
-                style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 16)),
-              )
-            ],
-          ),
-          const SizedBox(height: 24),
-          if (provider.isSheetDataLoading)
-            const Center(child: CircularProgressIndicator())
-          else if (provider.sheetDataErrorMessage != null)
-            Center(child: Text(provider.sheetDataErrorMessage!, style: TextStyle(color: AppColors.error)))
-          else if (provider.sheetData.isEmpty)
-            const Center(child: Text('Tidak ada data. Klik tombol "Tarik Data" untuk memuat.'))
-          else
-            SizedBox(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: provider.sheetData.first.keys.map((key) => DataColumn(label: Text(key.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)))).toList(),
-                  rows: provider.sheetData.map((row) {
-                    return DataRow(
-                      cells: row.values.map((cell) => DataCell(Text(cell))).toList(),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-        ],
       ),
     );
   }
