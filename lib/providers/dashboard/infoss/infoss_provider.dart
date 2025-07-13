@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
-import 'package:admin_dashboard_template/models/infoss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/infoss/infoss_model.dart';
 import 'package:flutter/material.dart';
 
 enum InfossViewState { Idle, Busy }

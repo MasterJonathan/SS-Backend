@@ -27,7 +27,7 @@ DateTime? _parseSafeTimestamp(dynamic value) {
   return null;
 }
 
-class NewsModel {
+class BeritaModel {
   final String id; // ID Dokumen
   final String category;
   final String? full; // Deskripsi lengkap
@@ -43,7 +43,7 @@ class NewsModel {
   final String title;
   final DateTime? uploadDate;
 
-  NewsModel({
+  BeritaModel({
     required this.id,
     required this.category,
     this.full,
@@ -60,10 +60,10 @@ class NewsModel {
     this.uploadDate,
   });
 
-  factory NewsModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
+  factory BeritaModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
     final data = snapshot.data();
     
-    return NewsModel(
+    return BeritaModel(
       id: snapshot.id,
       category: data?['category'] ?? '',
       full: data?['full'],

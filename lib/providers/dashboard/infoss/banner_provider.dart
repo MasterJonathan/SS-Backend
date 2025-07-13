@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
-import 'package:admin_dashboard_template/models/banner_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/infoss/banner_model.dart';
 import 'package:flutter/material.dart';
 
 enum BannerViewState { Idle, Busy }

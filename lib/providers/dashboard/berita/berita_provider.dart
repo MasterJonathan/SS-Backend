@@ -2,24 +2,24 @@
 
 import 'dart:async';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
-import 'package:admin_dashboard_template/models/news_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/berita/berita_model.dart';
 import 'package:flutter/material.dart';
 
-enum NewsViewState { Idle, Busy }
+enum BeritaViewState { Idle, Busy }
 
-class NewsProvider extends ChangeNotifier {
+class BeritaProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
   late StreamSubscription _streamSubscription;
 
-  List<NewsModel> _newsList = [];
-  NewsViewState _state = NewsViewState.Busy;
+  List<BeritaModel> _newsList = [];
+  BeritaViewState _state = BeritaViewState.Busy;
   String? _errorMessage;
 
-  List<NewsModel> get newsList => _newsList;
-  NewsViewState get state => _state;
+  List<BeritaModel> get newsList => _newsList;
+  BeritaViewState get state => _state;
   String? get errorMessage => _errorMessage;
 
-  NewsProvider({required FirestoreService firestoreService})
+  BeritaProvider({required FirestoreService firestoreService})
       : _firestoreService = firestoreService {
     _listenToNews();
   }
@@ -28,56 +28,56 @@ class NewsProvider extends ChangeNotifier {
     
     _streamSubscription = _firestoreService.getNewsStream().listen((data) {
       _newsList = data;
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
     }, onError: (error) {
       _errorMessage = "Gagal memuat data berita: $error";
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
     });
   }
 
-  Future<bool> addNews(NewsModel news) async {
-    _setState(NewsViewState.Busy);
+  Future<bool> addNews(BeritaModel news) async {
+    _setState(BeritaViewState.Busy);
     try {
       
       await _firestoreService.addNews(news);
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
       return true;
     } catch (e) {
       _errorMessage = e.toString();
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
       return false;
     }
   }
 
-  Future<bool> updateNews(NewsModel news) async {
-    _setState(NewsViewState.Busy);
+  Future<bool> updateNews(BeritaModel news) async {
+    _setState(BeritaViewState.Busy);
     try {
       
       await _firestoreService.updateNews(news);
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
       return true;
     } catch (e) {
       _errorMessage = e.toString();
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
       return false;
     }
   }
 
   Future<bool> deleteNews(String newsId) async {
-    _setState(NewsViewState.Busy);
+    _setState(BeritaViewState.Busy);
     try {
       
       await _firestoreService.deleteNews(newsId);
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
       return true;
     } catch (e) {
       _errorMessage = e.toString();
-      _setState(NewsViewState.Idle);
+      _setState(BeritaViewState.Idle);
       return false;
     }
   }
 
-  void _setState(NewsViewState newState) {
+  void _setState(BeritaViewState newState) {
     _state = newState;
     notifyListeners();
   }

@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'package:admin_dashboard_template/core/auth/auth_service.dart';
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
-import 'package:admin_dashboard_template/models/user_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/user_management/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

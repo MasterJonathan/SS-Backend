@@ -1,10 +1,10 @@
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
 import 'package:admin_dashboard_template/core/services/sheets_service.dart';
-import 'package:admin_dashboard_template/models/infoss_model.dart';
-import 'package:admin_dashboard_template/models/kawanss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/infoss/infoss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/kawanss/kawanss_model.dart';
 import 'package:admin_dashboard_template/models/kontributor_model.dart';
-import 'package:admin_dashboard_template/models/news_model.dart';
-import 'package:admin_dashboard_template/models/user_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/berita/berita_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/user_management/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -117,15 +117,15 @@ class ReportProvider extends ChangeNotifier {
             usersFuture,
         ]);
 
-        final List<NewsModel> news = results[0] as List<NewsModel>;
+        final List<BeritaModel> news = results[0] as List<BeritaModel>;
         final List<KawanssModel> kawanss = results[1] as List<KawanssModel>;
         final List<KontributorModel> kontributor = results[2] as List<KontributorModel>;
         _allUsers = results[3] as List<UserModel>;
 
         _allPosts = [...news, ...kawanss, ...kontributor];
         _allPosts.sort((a, b) {
-            DateTime dateA = (a is NewsModel) ? a.uploadDate! : (a is KawanssModel ? a.uploadDate : (a as KontributorModel).uploadDate);
-            DateTime dateB = (b is NewsModel) ? b.uploadDate! : (b is KawanssModel ? b.uploadDate : (b as KontributorModel).uploadDate);
+            DateTime dateA = (a is BeritaModel) ? a.uploadDate! : (a is KawanssModel ? a.uploadDate : (a as KontributorModel).uploadDate);
+            DateTime dateB = (b is BeritaModel) ? b.uploadDate! : (b is KawanssModel ? b.uploadDate : (b as KontributorModel).uploadDate);
             return dateB.compareTo(dateA);
         });
 
@@ -279,7 +279,7 @@ class ReportProvider extends ChangeNotifier {
         int likes = 0;
         int comments = 0;
 
-        if (post is NewsModel) {
+        if (post is BeritaModel) {
             title = post.title!; type = 'Berita Web'; date = post.uploadDate!.toIso8601String();
             author = post.pengirim!; views = post.jumlahView!; likes = post.jumlahLike!; comments = 0;
         } else if (post is KawanssModel) {
