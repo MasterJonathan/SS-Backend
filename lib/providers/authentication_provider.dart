@@ -85,9 +85,9 @@ class AuthenticationProvider extends ChangeNotifier {
           id: credential!.user!.uid, // Gunakan UID dari Auth sebagai ID dokumen
           email: email,
           nama: name,
+          username: name,
           role: 'Admin', // Peran default untuk admin panel
           photoURL: 'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg',
-          waktu: DateTime.now(),
           jumlahComment: 0,
           jumlahKontributor: 0,
           jumlahLike: 0,
@@ -96,6 +96,8 @@ class AuthenticationProvider extends ChangeNotifier {
           jenisKelamin: '',
           nomorHp: '',
           tanggalLahir: '',
+          status: false,
+          joinDate: DateTime.now(),
         );
         // Panggil service untuk menyimpan profil baru ini ke Firestore
         await _firestoreService.setUserProfile(newUser);

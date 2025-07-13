@@ -110,7 +110,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.surface,
-          padding: const EdgeInsets.fromLTRB(8, 16, 12, 16),
+          padding: const EdgeInsets.fromLTRB(8, 24, 12, 24),
           textStyle: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w600,
