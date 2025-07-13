@@ -2,10 +2,12 @@ import 'package:admin_dashboard_template/core/theme/app_colors.dart';
 import 'package:admin_dashboard_template/models/infoss_model.dart';
 import 'package:admin_dashboard_template/screens/dashboard/report/report_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
@@ -66,12 +68,14 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
               const SizedBox(width: 24),
               Expanded(
                 flex: 2,
-                child: _buildAnalyticsCard(textTheme),
+                child: _buildAnalyticsCard(textTheme, reportProvider),
               ),
             ],
           ),
           const SizedBox(height: 32),
           _buildTrafficChartCard(textTheme, reportProvider),
+          const SizedBox(height: 32),
+          _buildSheetDataTable(textTheme, reportProvider), // Menampilkan data Google Sheets
         ],
       ),
     );
@@ -142,34 +146,13 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     final stats = provider.monthlyStats ??
         {'totalUsers': 0, 'newUsers': 0, 'newUsersChange': 0.0, 'totalPosts': 0, 'newPosts': 0};
     final numberFormat = NumberFormat.decimalPattern('id_ID');
-    final double newUsersChange = stats['newUsersChange'] as double;
-
+    final double newUsersChange = (stats['newUsersChange'] as num).toDouble();
 
     final statsData = [
-      {
-        'icon': Icons.people_alt_rounded,
-        'title': 'Total Pengguna',
-        'value': numberFormat.format(stats['totalUsers']),
-        'change': null,
-      },
-      {
-        'icon': Icons.person_add_rounded,
-        'title': 'Pendaftar Baru (30 Hari)',
-        'value': numberFormat.format(stats['newUsers']),
-        'change': newUsersChange,
-      },
-      {
-        'icon': Icons.article_rounded,
-        'title': 'Total Postingan',
-        'value': numberFormat.format(stats['totalPosts']),
-        'change': null,
-      },
-      {
-        'icon': Icons.new_releases_rounded,
-        'title': 'Postingan Baru (30 Hari)',
-        'value': numberFormat.format(stats['newPosts']),
-        'change': null,
-      },
+      {'icon': Icons.people_alt_rounded, 'title': 'Total Pengguna', 'value': numberFormat.format(stats['totalUsers']), 'change': null},
+      {'icon': Icons.person_add_rounded, 'title': 'Pendaftar Baru (30 Hari)', 'value': numberFormat.format(stats['newUsers']), 'change': newUsersChange},
+      {'icon': Icons.article_rounded, 'title': 'Total Postingan', 'value': numberFormat.format(stats['totalPosts']), 'change': null},
+      {'icon': Icons.new_releases_rounded, 'title': 'Postingan Baru (30 Hari)', 'value': numberFormat.format(stats['newPosts']), 'change': null},
     ];
 
     return GridView.builder(
@@ -204,12 +187,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildEnhancedStatCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    double? change,
-  }) {
+  Widget _buildEnhancedStatCard({required IconData icon, required String title, required String value, double? change}) {
     return CustomCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -406,7 +384,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
   }
 
   Color _getRankColor(int index) {
-    switch (index) {
+     switch (index) {
       case 0: return const Color(0xFFFFD700); // Gold
       case 1: return const Color(0xFFC0C0C0); // Silver
       case 2: return const Color(0xFFCD7F32); // Bronze
@@ -414,7 +392,18 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     }
   }
 
-  Widget _buildAnalyticsCard(TextTheme textTheme) {
+  Widget _buildAnalyticsCard(TextTheme textTheme, ReportProvider provider) {
+    void _launchURL(String url) async {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tidak bisa membuka $url')),
+        );
+      }
+    }
+  
     return CustomCard(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -445,38 +434,24 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 24),
           _buildActionButton(
-            icon: Icons.analytics_outlined,
-            label: 'Tarik Data dari Google Analytics',
-            colors: [const Color(0xFFF4B400), const Color(0xFFFF9800)],
+            icon: Icons.table_chart_outlined,
+            label: 'Buka Google Sheets',
+            colors: [const Color(0xFF188038), const Color(0xFF10B981)],
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Fitur ini memerlukan integrasi dengan Google Analytics API.'),
-                  backgroundColor: Colors.orange.shade600,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              );
+              const sheetUrl = 'https://docs.google.com/spreadsheets/d/1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc';
+              _launchURL(sheetUrl);
+              FirebaseAnalytics.instance.logEvent(name: 'open_google_sheets', parameters: {'url': sheetUrl});
             },
           ),
           const SizedBox(height: 16),
           _buildActionButton(
-            icon: Icons.download_rounded,
-            label: 'Ekspor Laporan ke Excel',
-            colors: [const Color(0xFF188038), const Color(0xFF10B981)],
+            icon: Icons.analytics_outlined,
+            label: 'Buka Google Analytics',
+            colors: [const Color(0xFFF4B400), const Color(0xFFFF9800)],
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Fitur ekspor ke Excel/CSV sedang dalam pengembangan.'),
-                  backgroundColor: Colors.green.shade600,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              );
+              const analyticsUrl = 'https://analytics.google.com/';
+              _launchURL(analyticsUrl);
+              FirebaseAnalytics.instance.logEvent(name: 'open_google_analytics', parameters: {'url': analyticsUrl});
             },
           ),
         ],
@@ -484,12 +459,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required List<Color> colors,
-    required VoidCallback onPressed,
-  }) {
+  Widget _buildActionButton({required IconData icon, required String label, required List<Color> colors, required VoidCallback onPressed}) {
     return Container(
       width: double.infinity,
       height: 56,
@@ -644,7 +614,7 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
   }
 
   Widget _buildBarChart(ReportProvider provider) {
-    double maxY = 0;
+     double maxY = 0;
     if (provider.trafficData.isNotEmpty) {
       maxY = provider.trafficData.reduce((a, b) => a > b ? a : b) * 1.2;
     }
@@ -730,6 +700,55 @@ class _ReportPageState extends State<ReportPage> with TickerProviderStateMixin {
             ],
           );
         }).toList(),
+      ),
+    );
+  }
+
+  // Widget baru untuk menampilkan data Google Sheets
+  Widget _buildSheetDataTable(TextTheme textTheme, ReportProvider provider) {
+    return CustomCard(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Data dari Google Sheets',
+                style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              ElevatedButton.icon(
+                onPressed: provider.isSheetDataLoading ? null : () => provider.fetchSheetData(),
+                icon: const Icon(Icons.refresh, size: 16),
+                label: const Text('Tarik Data'),
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 16)),
+              )
+            ],
+          ),
+          const SizedBox(height: 24),
+          if (provider.isSheetDataLoading)
+            const Center(child: CircularProgressIndicator())
+          else if (provider.sheetDataErrorMessage != null)
+            Center(child: Text(provider.sheetDataErrorMessage!, style: TextStyle(color: AppColors.error)))
+          else if (provider.sheetData.isEmpty)
+            const Center(child: Text('Tidak ada data. Klik tombol "Tarik Data" untuk memuat.'))
+          else
+            SizedBox(
+              width: double.infinity,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: provider.sheetData.first.keys.map((key) => DataColumn(label: Text(key.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)))).toList(),
+                  rows: provider.sheetData.map((row) {
+                    return DataRow(
+                      cells: row.values.map((cell) => DataCell(Text(cell))).toList(),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

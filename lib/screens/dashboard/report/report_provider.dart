@@ -1,4 +1,7 @@
+// lib/screens/dashboard/report/report_provider.dart
+
 import 'package:admin_dashboard_template/core/services/firestore_service.dart';
+import 'package:admin_dashboard_template/core/services/sheets_service.dart';
 import 'package:admin_dashboard_template/models/infoss_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,12 +10,15 @@ enum TrafficTimeRange { Harian, Mingguan, Bulanan, Tahunan }
 
 class ReportProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
+  late final SheetsService _sheetsService;
 
+  // State untuk statistik umum dari Firestore
   bool _isStatsLoading = false;
   String? _statsErrorMessage;
   Map<String, dynamic>? _monthlyStats;
   List<InfossModel> _topPosts = [];
 
+  // State untuk grafik traffic
   bool _isTrafficLoading = false;
   String? _trafficErrorMessage;
   TrafficTimeRange _selectedTimeRange = TrafficTimeRange.Harian;
@@ -20,6 +26,12 @@ class ReportProvider extends ChangeNotifier {
   List<String> _trafficLabels = [];
   String _trafficChartTitle = "Rata-rata Traffic 24 Jam Terakhir";
 
+  // State baru untuk data dari Google Sheets
+  bool _isSheetDataLoading = false;
+  String? _sheetDataErrorMessage;
+  List<Map<String, String>> _sheetData = [];
+
+  // Getters
   bool get isStatsLoading => _isStatsLoading;
   String? get statsErrorMessage => _statsErrorMessage;
   Map<String, dynamic>? get monthlyStats => _monthlyStats;
@@ -32,10 +44,20 @@ class ReportProvider extends ChangeNotifier {
   List<String> get trafficLabels => _trafficLabels;
   String get trafficChartTitle => _trafficChartTitle;
 
+  bool get isSheetDataLoading => _isSheetDataLoading;
+  String? get sheetDataErrorMessage => _sheetDataErrorMessage;
+  List<Map<String, String>> get sheetData => _sheetData;
+
   ReportProvider({required FirestoreService firestoreService})
       : _firestoreService = firestoreService {
+    _initializeServices();
     fetchGeneralReports();
     fetchTrafficReport(TrafficTimeRange.Harian);
+  }
+
+  Future<void> _initializeServices() async {
+    // Inisialisasi SheetsService. Pastikan file kredensial ada.
+    _sheetsService = await SheetsService.initialize();
   }
 
   Future<void> fetchGeneralReports() async {
@@ -97,6 +119,35 @@ class ReportProvider extends ChangeNotifier {
     }
   }
 
+  // Fungsi untuk mengambil data dari Google Sheets
+  Future<void> fetchSheetData() async {
+    _isSheetDataLoading = true;
+    _sheetDataErrorMessage = null;
+    notifyListeners();
+    try {
+      // ID Spreadsheet sudah diganti dengan milik Anda
+      const spreadsheetId = '1F2obOikLOn92ewLwLlPhmVdhAW19EO15CcOZG_rtOWc'; 
+      // !!! JIKA NAMA WORKSHEET (TAB) BUKAN 'Sheet1', GANTI DI SINI !!!
+      const worksheetTitle = 'Sheet1'; 
+
+      final worksheet = await _sheetsService.getWorksheet(spreadsheetId, worksheetTitle);
+      if (worksheet != null) {
+        final data = await _sheetsService.getRowsAsMaps(worksheet);
+        _sheetData = data ?? [];
+        if (_sheetData.isEmpty) {
+          _sheetDataErrorMessage = "Worksheet ditemukan, namun tidak ada data.";
+        }
+      } else {
+        _sheetDataErrorMessage = "Worksheet tidak ditemukan. Periksa ID, nama worksheet, dan pastikan sudah di-share ke service account.";
+      }
+    } catch (e) {
+      _sheetDataErrorMessage = "Gagal memuat data dari Sheets: $e";
+    } finally {
+      _isSheetDataLoading = false;
+      notifyListeners();
+    }
+  }
+  
   void _processTrafficData(List<DateTime> timestamps, TrafficTimeRange range) {
     if (timestamps.isEmpty) {
       _trafficData = [];
