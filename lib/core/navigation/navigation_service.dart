@@ -17,11 +17,13 @@ enum DashboardPage {
   userAdminManagement,
 
   bannerTop,
-  kawanSS,
+  infoSS,
 
   beritaWeb,
-  kontributorManagement,
-  kontributorPost,
+  kawanssManagement,
+  kawanssPost,
+
+
 
   chatManagement,
   
@@ -31,8 +33,6 @@ enum DashboardPage {
 
   
 
-  kawanSSManagement,
-  contributor,
   kontributorComment,
   postinganTerlapor,
   reportManagement,

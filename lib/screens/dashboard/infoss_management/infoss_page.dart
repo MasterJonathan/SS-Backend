@@ -1,20 +1,20 @@
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/kawanss_model.dart';
-import 'package:admin_dashboard_template/providers/kawanss_provider.dart';
+import 'package:admin_dashboard_template/models/infoss_model.dart';
+import 'package:admin_dashboard_template/providers/infoss_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class KawanssPage extends StatefulWidget {
-  const KawanssPage({super.key});
+class InfossPage extends StatefulWidget {
+  const InfossPage({super.key});
 
   @override
-  State<KawanssPage> createState() => _KawanssPageState();
+  State<InfossPage> createState() => _InfossPageState();
 }
 
-class _KawanssPageState extends State<KawanssPage> {
-  late List<KawanssModel> _filteredData;
+class _InfossPageState extends State<InfossPage> {
+  late List<InfossModel> _filteredData;
   final TextEditingController _searchController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('yyyy-MM-dd\nHH:mm:ss');
   String _entriesToShow = '10';
@@ -22,8 +22,8 @@ class _KawanssPageState extends State<KawanssPage> {
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<KawanssProvider>(context, listen: false);
-    _filteredData = provider.kawanssList;
+    final provider = Provider.of<InfossProvider>(context, listen: false);
+    _filteredData = provider.infossList;
 
     _searchController.addListener(() {
       setState(() {});
@@ -36,7 +36,7 @@ class _KawanssPageState extends State<KawanssPage> {
     super.dispose();
   }
 
-  void _performFilter(String query, List<KawanssModel> allData) {
+  void _performFilter(String query, List<InfossModel> allData) {
     if (query.isEmpty) {
       _filteredData = allData;
     } else {
@@ -44,12 +44,9 @@ class _KawanssPageState extends State<KawanssPage> {
           allData
               .where(
                 (item) =>
-                    (item.title?.toLowerCase() ?? '').contains(
+                    (item.judul?.toLowerCase() ?? '').contains(
                       query.toLowerCase(),
-                    ) ||
-                    (item.accountName?.toLowerCase() ?? '').contains(
-                      query.toLowerCase(),
-                    ),
+                    )
               )
               .toList();
     }
@@ -57,9 +54,9 @@ class _KawanssPageState extends State<KawanssPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<KawanssProvider>(
+    return Consumer<InfossProvider>(
       builder: (context, provider, child) {
-        _performFilter(_searchController.text, provider.kawanssList);
+        _performFilter(_searchController.text, provider.infossList);
 
         return Column(
           key: const PageStorageKey('kawanssPage'),
@@ -76,8 +73,8 @@ class _KawanssPageState extends State<KawanssPage> {
                       children: [
                         _buildTableControls(),
                         const SizedBox(height: 20),
-                        if (provider.state == KawanssViewState.Busy &&
-                            provider.kawanssList.isEmpty)
+                        if (provider.state == InfossViewState.Busy &&
+                            provider.infossList.isEmpty)
                           const Center(child: CircularProgressIndicator())
                         else if (provider.errorMessage != null)
                           Center(child: Text('Error: ${provider.errorMessage}'))
@@ -155,14 +152,14 @@ class _KawanssPageState extends State<KawanssPage> {
         ),
         ElevatedButton.icon(
           icon: const Icon(Icons.add, size: 16),
-          label: const Text('Tambah Kawan SS'),
+          label: const Text('Tambah Info SS'),
           onPressed: () {},
         ),
       ],
     );
   }
 
-  Widget _buildDataTable(KawanssProvider provider) {
+  Widget _buildDataTable(InfossProvider provider) {
     return DataTable(
       columns: const [
         DataColumn(label: Text('Judul')),
@@ -170,41 +167,39 @@ class _KawanssPageState extends State<KawanssPage> {
         DataColumn(label: Text('Dilihat')),
         DataColumn(label: Text('Like')),
         DataColumn(label: Text('Comment')),
-        DataColumn(label: Text('Status')),
+        // DataColumn(label: Text('Status')),
         DataColumn(label: Text('Tanggal\nPublish')),
-        DataColumn(label: Text('Tanggal\nPosting')),
-        DataColumn(label: Text('Diposting\nOleh')),
+        // DataColumn(label: Text('Tanggal\nPosting')),
+        // DataColumn(label: Text('Diposting\nOleh')),
         DataColumn(label: Text('Aksi')),
       ],
       rows:
           _filteredData.map((item) {
-            bool isActive = !item.deleted;
+            // bool isActive = !item.deleted;
             return DataRow(
               cells: [
-                DataCell(SizedBox(width: 250, child: Text(item.title ?? '-'))),
-                DataCell(const Text('-')),
-                DataCell(Text(item.jumlahLaporan.toString())),
+                DataCell(SizedBox(width: 250, child: Text(item.judul ?? '-'))),
+                DataCell(Text(item.kategori ?? '-')),
+                DataCell(Text(item.jumlahView.toString())),
                 DataCell(Text(item.jumlahLike.toString())),
                 DataCell(Text(item.jumlahComment.toString())),
-                DataCell(
-                  Chip(
-                    label: Text(isActive ? 'Active' : 'Inactive'),
-                    backgroundColor:
-                        isActive
-                            ? AppColors.success.withOpacity(0.1)
-                            : AppColors.error.withOpacity(0.1),
-                    labelStyle: TextStyle(
-                      color: isActive ? AppColors.success : AppColors.error,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
-                  ),
-                ), 
+                // DataCell(
+                //   Chip(
+                //     label: Text(isActive ? 'Active' : 'Inactive'),
+                //     backgroundColor:
+                //         isActive
+                //             ? AppColors.success.withOpacity(0.1)
+                //             : AppColors.error.withOpacity(0.1),
+                //     labelStyle: TextStyle(
+                //       color: isActive ? AppColors.success : AppColors.error,
+                //     ),
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 8,
+                //       vertical: 2,
+                //     ),
+                //   ),
+                // ), 
                 DataCell(Text(_dateFormatter.format(item.uploadDate))),
-                DataCell(Text(_dateFormatter.format(item.uploadDate))),
-                DataCell(Text(item.accountName ?? '-')),
                 DataCell(
                   Row(
                     children: [
@@ -219,7 +214,7 @@ class _KawanssPageState extends State<KawanssPage> {
                         color: AppColors.error,
                         tooltip: 'Delete',
                         onPressed:
-                            () async => await provider.deleteKawanss(item.id),
+                            () async => await provider.deleteInfoss(item.id),
                       ),
                       const SizedBox(width: 4),
                       _actionButton(

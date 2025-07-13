@@ -178,6 +178,35 @@ class FirestoreService {
     return _db.collection('bannerTop').doc(bannerId).delete();
   }
 
+
+
+
+
+  // --- Metode untuk Koleksi Infoss --- (BARU)
+
+  Stream<List<InfossModel>> getInfossStream() {
+    return _db
+        .collection(INFOSS_COLLECTION)
+        .orderBy('uploadDate', descending: true) // Urutkan berdasarkan tanggal terbaru
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => InfossModel.fromFirestore(doc, null))
+            .toList());
+  }
+
+  Future<DocumentReference> addInfoss(InfossModel infoss) {
+    // Menggunakan .add() agar Firestore membuat ID unik secara otomatis
+    return _db.collection(INFOSS_COLLECTION).add(infoss.toFirestore());
+  }
+
+  Future<void> updateInfoss(InfossModel infoss) {
+    return _db.collection(INFOSS_COLLECTION).doc(infoss.id).update(infoss.toFirestore());
+  }
+
+  Future<void> deleteInfoss(String infossId) {
+    return _db.collection(INFOSS_COLLECTION).doc(infossId).delete();
+  }
+
   Stream<List<InfossCommentModel>> getInfossCommentsStream() {
     return _db
         .collection(INFOSS_COMMENTS_COLLECTION)
@@ -202,6 +231,10 @@ class FirestoreService {
   Future<void> deleteInfossComment(String commentId) {
     return _db.collection(INFOSS_COMMENTS_COLLECTION).doc(commentId).delete();
   }
+
+
+
+
 
   Future<SettingsModel?> getSettings() async {
     final docRef = _db.collection('settings').doc('appConfig');
