@@ -1,13 +1,13 @@
 import 'package:admin_dashboard_template/core/utils/constants.dart';
-import 'package:admin_dashboard_template/models/banner_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/infoss/banner_model.dart';
 import 'package:admin_dashboard_template/models/infoss_comment_model.dart';
-import 'package:admin_dashboard_template/models/infoss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/infoss/infoss_model.dart';
 import 'package:admin_dashboard_template/models/kategori_model.dart';
-import 'package:admin_dashboard_template/models/kawanss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/kawanss/kawanss_model.dart';
 import 'package:admin_dashboard_template/models/kontributor_model.dart';
-import 'package:admin_dashboard_template/models/news_model.dart';
-import 'package:admin_dashboard_template/models/settings_model.dart';
-import 'package:admin_dashboard_template/models/user_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/berita/berita_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/user_management/settings_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/user_management/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -123,7 +123,7 @@ class FirestoreService {
     return _db.collection(KONTRIBUTOR_COLLECTION).doc(kontributorId).delete();
   }
 
-  Stream<List<NewsModel>> getNewsStream() {
+  Stream<List<BeritaModel>> getNewsStream() {
     return _db
         .collection(NEWS_COLLECTION)
         .where('title', isNotEqualTo: null)
@@ -131,15 +131,15 @@ class FirestoreService {
         .orderBy('title') 
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => NewsModel.fromFirestore(doc, null))
+            .map((doc) => BeritaModel.fromFirestore(doc, null))
             .toList());
   }
 
-  Future<DocumentReference> addNews(NewsModel news) {
+  Future<DocumentReference> addNews(BeritaModel news) {
     return _db.collection(NEWS_COLLECTION).add(news.toFirestore());
   }
 
-  Future<void> updateNews(NewsModel news) {
+  Future<void> updateNews(BeritaModel news) {
     return _db
         .collection(NEWS_COLLECTION)
         .doc(news.id)

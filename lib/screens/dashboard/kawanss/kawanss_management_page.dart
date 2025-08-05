@@ -1,7 +1,7 @@
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/kawanss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/kawanss/kawanss_model.dart';
 import 'package:admin_dashboard_template/models/kontributor_model.dart';
-import 'package:admin_dashboard_template/providers/kawanss_provider.dart';
+import 'package:admin_dashboard_template/providers/dashboard/kawanss/kawanss_provider.dart';
 import 'package:admin_dashboard_template/providers/kontributor_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';

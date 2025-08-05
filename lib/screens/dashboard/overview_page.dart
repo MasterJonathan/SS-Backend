@@ -1,7 +1,7 @@
 import 'package:admin_dashboard_template/providers/auth/authentication_provider.dart';
-import 'package:admin_dashboard_template/providers/kawanss_provider.dart';
+import 'package:admin_dashboard_template/providers/dashboard/kawanss/kawanss_provider.dart';
 import 'package:admin_dashboard_template/providers/kontributor_provider.dart';
-import 'package:admin_dashboard_template/providers/user_provider.dart';
+import 'package:admin_dashboard_template/providers/dashboard/user_management/user_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';

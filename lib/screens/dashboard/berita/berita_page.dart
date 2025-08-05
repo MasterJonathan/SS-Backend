@@ -1,8 +1,8 @@
 // lib/screens/dashboard/news_page.dart
 
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/news_model.dart';
-import 'package:admin_dashboard_template/providers/news_provider.dart';
+import 'package:admin_dashboard_template/models/dashboard/berita/berita_model.dart';
+import 'package:admin_dashboard_template/providers/dashboard/berita/berita_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +36,7 @@ class _BeritaPageState extends State<BeritaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NewsProvider>(
+    return Consumer<BeritaProvider>(
       builder: (context, provider, child) {
         final query = _searchController.text.toLowerCase();
         final allData = provider.newsList;
@@ -63,7 +63,7 @@ class _BeritaPageState extends State<BeritaPage> {
                   children: [
                     _buildTableControls(),
                     const SizedBox(height: 20),
-                    if (provider.state == NewsViewState.Busy && provider.newsList.isEmpty)
+                    if (provider.state == BeritaViewState.Busy && provider.newsList.isEmpty)
                       const Expanded(child: Center(child: CircularProgressIndicator()))
                     else if (provider.errorMessage != null)
                       Expanded(child: Center(child: Text('Error: ${provider.errorMessage}')))
@@ -133,7 +133,7 @@ class _BeritaPageState extends State<BeritaPage> {
     );
   }
 
-  Widget _buildDataTable(List<NewsModel> data) {
+  Widget _buildDataTable(List<BeritaModel> data) {
     return DataTable(
       dataRowMaxHeight: 80,
       columns: const [

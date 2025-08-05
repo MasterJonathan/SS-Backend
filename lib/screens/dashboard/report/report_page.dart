@@ -1,6 +1,6 @@
 // masterjonathan/ss-backend/SS-Backend-862a36bb5291b47a3c80564dd9a82260ee2f4d17/lib/screens/dashboard/report/report_page.dart
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/infoss_model.dart';
+import 'package:admin_dashboard_template/models/dashboard/infoss/infoss_model.dart';
 import 'package:admin_dashboard_template/screens/dashboard/report/report_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';

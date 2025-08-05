@@ -1,6 +1,6 @@
 import 'package:admin_dashboard_template/core/theme/app_colors.dart';
-import 'package:admin_dashboard_template/models/user_model.dart';
-import 'package:admin_dashboard_template/providers/user_provider.dart';
+import 'package:admin_dashboard_template/models/dashboard/user_management/user_model.dart';
+import 'package:admin_dashboard_template/providers/dashboard/user_management/user_provider.dart';
 import 'package:admin_dashboard_template/widgets/common/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
